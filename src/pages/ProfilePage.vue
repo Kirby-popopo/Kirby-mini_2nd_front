@@ -1,42 +1,42 @@
 <script>
 export default {
-  name: "ProfilePage",
-  components: {
-  },  
-  watch: {
-    '$route'() {
-      this.loadData();
-    }
-  },
-  data() {
-    return {
-        userId: '',
-        userName: 'test',
-        userProfileImage: '',
-        userDescription: '',
-        follower: [],
-        following: [],
-    };
-  },
-  methods: {
-    async loadData(){
-        // URL에서 쿼리 파라미터 가져오기
-        this.userId = this.$route.query.userId;
-        const param = {
-            userId: this.userId,
+    name: "ProfilePage",
+    components: {
+        },  
+    watch: {
+        '$route'() {
+            this.loadData();
         }
-        const response = await this.$axios.post("/Profile", param);
+    },
+    data() {
+        return {
+            userId: '',
+            userName: 'test',
+            userProfileImage: '',
+            userDescription: '',
+            follower: [],
+            following: [],
+        };
+    },
+    methods: {
+        async loadData(){
+            // URL에서 쿼리 파라미터 가져오기
+            this.userId = this.$route.query.userId;
+            const param = {
+                userId: this.userId,
+            }
+            const response = await this.$axios.post("/Profile", param);
 
-        this.userName = response.data.obj.userName;
-        this.userProfileImage = response.data.obj.profileImage;
-        this.userDescription = response.data.obj.description;
-        this.following = response.data.obj.following;
-        this.follower = response.data.obj.follower;
-    }
-  },
-  mounted() {
-    this.loadData();
-  },
+            this.userName = response.data.obj.userName;
+            this.userProfileImage = response.data.obj.profileImage;
+            this.userDescription = response.data.obj.description;
+            this.following = response.data.obj.following;
+            this.follower = response.data.obj.follower;
+        }
+    },
+    mounted() {
+        this.loadData();
+    },
 };
 </script>
 
@@ -116,16 +116,16 @@ export default {
         }
 
         .profile-button {
-          display: block;
-          background-color: #fafafa;
-          border: 1px solid #dbdbdb;
-          color: #262626;
-          padding: 5px 9px;
-          font-size: 14px;
-          font-weight: 600;
-          border-radius: 4px;
-          margin-right: 8px;
-          cursor: pointer;
+            display: block;
+            background-color: #fafafa;
+            border: 1px solid #dbdbdb;
+            color: #262626;
+            padding: 5px 9px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-right: 8px;
+            cursor: pointer;
         }
         .profile-button:hover {
                     background-color: #efefef;

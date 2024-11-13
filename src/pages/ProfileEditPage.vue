@@ -30,12 +30,12 @@ export default {
             formData.append('gender', this.$refs.gender.value); 
             console.log(formData);
             try{
-              const result = await this.$axios.post('/updateProfile', formData, {
+                const result = await this.$axios.post('/updateProfile', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',  // 파일 처리 관련 헤더.
                 },
             });
-              console.log(result);
+                console.log(result);
             }catch(err){
                 console.log(err);
             }
@@ -98,125 +98,125 @@ export default {
 </template>
 
 <style lang="css">
-       .container {
+        .container {
         position: fixed;
         left: 50%; /* 화면의 50% 위치로 이동 */
         top: 0; /* 상단에 고정 */
         transform: translateX(-50%); /* 요소의 수평 중앙으로 이동 */
-           max-width: 600px;
-           margin: 0 auto;
-           background-color: #121212;
-           border-radius: 8px;
-           padding: 20px;
-           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-           justify-content: center;
-           align-items: center;
-           color: white;
-       }
-       h1 {
-           margin-top: 0;
-           margin-bottom: 20px;
-           font-size: 24px;
-       }
-       .profile-item {
-           display: flex;
-           align-items: center;
-           margin-bottom: 20px;
-       }
-       .profile-item img {
-           width: 40px;
-           height: 40px;
-           border-radius: 50%;
-           margin-right: 10px;
-       }
-       .profile-item .username {
-           font-weight: bold;
-       }
-       .profile-item .change-button {
-           margin-left: auto;
-           background-color: #0095f6;
-           color: white;
-           border: none;
-           padding: 6px 12px;
-           border-radius: 4px;
-           cursor: pointer;
-       }
-       .form-group {
-           margin-bottom: 20px;
-       }
-       label {
-           display: block;
-           margin-bottom: 5px;
-           font-weight: bold;
-       }
-       input[type="text"], textarea, select {
-           width: 100%;
-           padding: 8px;
-           border: 1px solid #dbdbdb;
-           border-radius: 4px;
-           box-sizing: border-box;
-       }
-       textarea {
-           height: 100px;
-           resize: vertical;
-       }
-       .char-count {
-           text-align: right;
-           color: #8e8e8e;
-           font-size: 12px;
-       }
-       .toggle-container {
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-       }
-       .toggle-switch {
-           position: relative;
-           display: inline-block;
-           width: 50px;
-           height: 24px;
-       }
-       .toggle-switch input {
-           opacity: 0;
-           width: 0;
-           height: 0;
-       }
-       .slider {
-           position: absolute;
-           cursor: pointer;
-           top: 0;
-           left: 0;
-           right: 0;
-           bottom: 0;
-           background-color: #ccc;
-           transition: .4s;
-           border-radius: 24px;
-       }
-       .slider:before {
-           position: absolute;
-           content: "";
-           height: 20px;
-           width: 20px;
-           left: 2px;
-           bottom: 2px;
-           background-color: white;
-           transition: .4s;
-           border-radius: 50%;
-       }
-       input:checked + .slider {
-           background-color: #0095f6;
-       }
-       input:checked + .slider:before {
-           transform: translateX(26px);
-       }
-       .submit-button {
-           background-color: #0095f6;
-           color: white;
-           border: none;
-           padding: 10px 20px;
-           border-radius: 4px;
-           cursor: pointer;
-           font-size: 16px;
-           width: 100%;
-       }
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #121212;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .profile-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .profile-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .profile-item .username {
+            font-weight: bold;
+        }
+        .profile-item .change-button {
+            margin-left: auto;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #dbdbdb;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .char-count {
+            text-align: right;
+            color: #8e8e8e;
+            font-size: 12px;
+        }
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #0095f6;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .submit-button {
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
 </style>
