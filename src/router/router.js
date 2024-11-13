@@ -2,7 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import test from '@/components/Test.vue'
 import main from '@/components/MainPage.vue'
 import profile from '@/components/ProfilePage.vue'
-import ProfileEdit from "@/components/ProfileEdit.vue";
+import ProfileEdit from "@/components/ProfileEditPage.vue";
 
 const routes = [
     {
