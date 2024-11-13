@@ -1,8 +1,8 @@
-import { createWebHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter } from "vue-router"
 import test from '@/components/Test.vue'
-import main from '@/components/MainPage.vue'
-import profile from '@/components/ProfilePage.vue'
-import ProfileEdit from "@/components/ProfileEditPage.vue";
+import main from '@/pages/MainPage.vue'
+import profile from '@/pages/ProfilePage.vue'
+import ProfileEdit from "@/pages/ProfileEditPage.vue"
 
 const routes = [
     {
