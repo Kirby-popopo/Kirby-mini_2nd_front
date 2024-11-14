@@ -1,7 +1,7 @@
 <template>
     <div class="menu-search-item" v-for="(item, index) in userList">
         <router-link :to="{ path: '/profile', query: { userId: item.userId } }">
-            <img src="" alt="User">
+            <img :src="item.profileImage" alt="User" width="20px">
             <span>{{item.name}}</span>
         </router-link>
     </div>

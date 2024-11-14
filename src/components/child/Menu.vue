@@ -7,17 +7,18 @@
         <SearchItem :user-list="searchUser"></SearchItem>
     </div>
     
-     <div v-if="section == 'alram'" id="notifications" class="menu-section">
-       <h2>알림</h2>
-       <div class="notification-item">
-         <img src="" alt="User">
-         <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
-       </div>
-       <div class="notification-item">
-         <img src="" alt="User">
-         <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
-       </div>
-     </div>
+    <div v-if="section == 'alram'" id="notifications" class="menu-section">
+        <h2>알림</h2>
+        <div class="notification-item">
+        <img src="" alt="User">
+        <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
+        </div>
+
+        <div class="notification-item">
+        <img src="" alt="User">
+        <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
+        </div>
+    </div>
 </div>
 </template>
 
@@ -47,7 +48,7 @@ export default {
                 .then((response) =>{
                     this.searchUser = response.data.obj;
                 })
-        }else{ // 이거 서버에서 처리해야함.
+        }else{
             this.searchUser = [];
         }
       },
