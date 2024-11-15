@@ -44,10 +44,18 @@ export default {
         }
 
         if(inputText.value != ''){
-                this.$axios.post("/Search", param)
+            if(inputText.value.chatAt(0) == '#'){
+                // 게시글 검색
+                // inputText.value.substr(1, inputText.value.length)
+                // 첫 글자 # 일때 게시글 검색하는 post로 ajax요청.
+                // 첫 글자 #을 제외한 나머지 문자열로 해시태그 검색
+            }else{
+                // 유저 검색
+                this.$axios.post("/SearchUser", param)
                 .then((response) =>{
                     this.searchUser = response.data.obj;
                 })
+            }
         }else{
             this.searchUser = [];
         }

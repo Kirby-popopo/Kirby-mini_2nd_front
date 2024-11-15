@@ -19,7 +19,7 @@ const instance = axios.create({
 //   const authStore = useAuthStore();
 //   const accessTokentoken = authStore.accessTokentoken;
 //   if (accessTokentoken) {
-//       config.headers['Authorization'] = `Bearer ${accessTokentoken}`;
+//       config.headers['Authorization'] = `Bearer ${accessTokentoken}`; // 해당부분에 pinia를 이용해서 토큰을 꺼내서 저장해주세요.
 //   }
 //   return config;
 // });

@@ -5,7 +5,8 @@ export default {
     data(){
         return {
             descriptionText: '',
-            selectedFile: null,
+            selectedFile: '',
+            selectedFileName: '',
             //profileImagePreview: null,
             profileImage: '',
         }
@@ -19,6 +20,7 @@ export default {
             const user = await this.$axios.post('/getUser', {id:'1234'});
             
             this.profileImage = user.data.obj.profileImage;
+            this.selectedFileName = user.data.obj.profileImage;
             this.descriptionText = user.data.obj.description;
             this.$refs.gender.value = user.data.obj.gender;
         },
@@ -29,16 +31,19 @@ export default {
             const file = e.target.files[0];
             if(file){
                 this.selectedFile = file;
+                this.selectedFileName = file.name;
                 console.log(this.selectedFile);
                 this.profileImage = URL.createObjectURL(file);
             }
         },
         async submitChangeProfile(e){
             e.preventDefault();
+            console.log(this.selectedFileName);
 
             const formData = new FormData();
             formData.append('updateImage', this.selectedFile);
             formData.append('bio', this.descriptionText);
+            formData.append('updateImageName', this.selectedFileName);
             formData.append('gender', this.$refs.gender.value); 
             // pinia에서 받아오기로 바꿔야함.
             formData.append('id', "1234");
