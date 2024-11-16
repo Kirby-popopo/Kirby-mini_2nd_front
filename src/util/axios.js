@@ -2,10 +2,11 @@ import axios from 'axios';
 import { useAuthStore } from '@/stores/useAuthStores';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8090',  
+  baseURL: 'http://localhost:8090/',  
   timeout: 10000,  
   headers: {
     'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'    //AJAX 요청임을 알림
   }
 });
 
@@ -34,7 +35,7 @@ instance.interceptors.response.use(
   (error) => {
     // 그 외의 응답은 해당 부분으로 처리할 겁니다. 
     // pinia로 refreshToken 바로 요청해도 좋고 등등.
-    // 지훈이형 부탁해요.
+    // 지훈이형 부탁해요.  "봐서"
     return Promise.reject(error);
   }
 );

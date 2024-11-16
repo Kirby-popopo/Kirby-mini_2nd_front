@@ -3,6 +3,8 @@ import test from '@/components/Test.vue'
 import main from '@/pages/MainPage.vue'
 import profile from '@/pages/ProfilePage.vue'
 import ProfileEdit from "@/pages/ProfileEditPage.vue"
+import login from '@/pages/LoginPage.vue'
+import signup from '@/pages/SignUpPage.vue'
 
 const routes = [
     {
@@ -16,6 +18,14 @@ const routes = [
     {
         path:'/profileEdit',
         component: ProfileEdit,
+    },
+    {
+        path:'/login',
+        component: login
+    },
+    {
+        path:'/signup',
+        component: signup
     }
 ]; // 라우팅 패스, 컴포넌트 등 정의
 
