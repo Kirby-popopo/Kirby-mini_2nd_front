@@ -5,11 +5,25 @@ export default {
     data(){
         return {
             descriptionText: '',
-            selectedFile: null,
-            profileImagePreview: null,
+            selectedFile: '',
+            selectedFileName: '',
+            //profileImagePreview: null,
+            profileImage: '',
         }
     },
+    mounted(){
+        this.getUser();
+    },
     methods: {
+        async getUser(){
+            // pinia에서 id 꺼내와서 사용
+            const user = await this.$axios.post('/getUser', {id:'1234'});
+            
+            this.profileImage = user.data.obj.profileImage;
+            this.selectedFileName = user.data.obj.profileImage;
+            this.descriptionText = user.data.obj.description;
+            this.$refs.gender.value = user.data.obj.gender;
+        },
         selectImage(){
             this.$refs.fileInput.click();
         },
@@ -17,25 +31,33 @@ export default {
             const file = e.target.files[0];
             if(file){
                 this.selectedFile = file;
+                this.selectedFileName = file.name;
                 console.log(this.selectedFile);
-                this.profileImagePreview = URL.createObjectURL(file);
+                this.profileImage = URL.createObjectURL(file);
             }
         },
         async submitChangeProfile(e){
             e.preventDefault();
+            console.log(this.selectedFileName);
 
             const formData = new FormData();
             formData.append('updateImage', this.selectedFile);
             formData.append('bio', this.descriptionText);
+            formData.append('updateImageName', this.selectedFileName);
             formData.append('gender', this.$refs.gender.value); 
-            console.log(formData);
+            // pinia에서 받아오기로 바꿔야함.
+            formData.append('id', "1234");
+
             try{
                 const result = await this.$axios.post('/updateProfile', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',  // 파일 처리 관련 헤더.
-                },
-            });
-                console.log(result);
+                    headers: {
+                        'Content-Type': 'multipart/form-data',  // 파일 처리 관련 헤더.
+                    },
+                }
+            );
+            
+            this.$router.push("/profileEdit",);
+
             }catch(err){
                 console.log(err);
             }
@@ -53,7 +75,7 @@ export default {
     -->
     <form @submit.prevent="submitChangeProfile">
         <div class="profile-item">
-            <img :src="profileImagePreview" alt="프로필 이미지" id="profileImage">
+            <img v-bind:src="profileImage" alt="프로필 이미지" id="profileImage">
         <div>
             <div class="username">mysk423</div>
             <div >문태성</div>

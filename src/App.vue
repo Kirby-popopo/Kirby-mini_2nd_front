@@ -1,32 +1,24 @@
 <script>
-import { RouterView } from 'vue-router';
 
 
 </script>
 
 <template>
-    <div class="SideBarStyle">
+  <div class="row">
+
+    <div class="col-3">
       <SideBar/>
     </div>
-    <div class="ContentsStyle">
+
+    <div class="col-9">
       <RouterView/>
     </div>
+  </div>
+    
 </template>
 
 <style lang="css">
-  #SideBarStyle {
-    position: fixed;
-    background-color: #000000;
-    color: #fff;
-  }
-
-  #ContentsStyle{
-    display: flex;
-    position: fixed;
-    left: 200px;
-    background-color: #000000;
-  }
-
+  
   a {
     text-decoration: none;
   }
