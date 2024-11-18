@@ -44,12 +44,16 @@ export default {
         }
 
         if(inputText.value != ''){
-            if(inputText.value.chatAt(0) == '#'){
+            if(inputText.value.substr(0,1) == '#'){
                 // 게시글 검색
                 // inputText.value.substr(1, inputText.value.length)
                 // 첫 글자 # 일때 게시글 검색하는 post로 ajax요청.
                 // 첫 글자 #을 제외한 나머지 문자열로 해시태그 검색
+                console.log("게시글 검색 모드");
+                console.log("찾으려는 게시글 ------------");
+                console.log(inputText.value.substr(1, inputText.value.length));
             }else{
+                console.log("유저 검색 모드");
                 // 유저 검색
                 this.$axios.post("/SearchUser", param)
                 .then((response) =>{

@@ -7,6 +7,10 @@ export const useAuthStore = defineStore('auth', () => {
         userId : '',
         userDescription : '',
         userImageUrl : '',
+        userGender: '',
+        userName:'',
+        userNickName:'',
+        userPhoneNumber:'',
     })
 
     /*
@@ -28,5 +32,5 @@ export const useAuthStore = defineStore('auth', () => {
         userDetail.userImageUrl = data.userImageUrl;
     }
 
-    return { token , setToken, setUserDetail }
+    return { token, userDetail , setToken, setUserDetail }
 })
