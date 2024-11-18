@@ -2,10 +2,11 @@ import axios from 'axios';
 import { useAuthStore } from '@/stores/useAuthStores';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8090',  
+  baseURL: 'http://localhost:8090/',  
   timeout: 10000,  
   headers: {
     'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'    //AJAX 요청임을 알림
   }
 });
 
@@ -23,6 +24,7 @@ const instance = axios.create({
 //   }
 //   return config;
 // });
+
 
 // //응답 인터셉터
 // instance.interceptors.response.use(
