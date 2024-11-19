@@ -8,8 +8,6 @@
         <EndPosts/>
     </div>
 </div>
-
-
 </template>
 
 <script setup>
@@ -55,6 +53,12 @@ const getPosts = ()=>{
 onMounted(() => {
     console.log("mounted 실행");
     getPosts();
+})
+
+onUnmounted(() => {
+    posts = [];
+    page.value = 0;
+    showEndPosts.value = false;
 })
 
 provide('posts', posts);
