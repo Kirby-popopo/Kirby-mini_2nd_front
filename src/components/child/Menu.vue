@@ -7,17 +7,18 @@
         <SearchItem :user-list="searchUser"></SearchItem>
     </div>
     
-     <div v-if="section == 'alram'" id="notifications" class="menu-section">
-       <h2>알림</h2>
-       <div class="notification-item">
-         <img src="" alt="User">
-         <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
-       </div>
-       <div class="notification-item">
-         <img src="" alt="User">
-         <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
-       </div>
-     </div>
+    <div v-if="section == 'alram'" id="notifications" class="menu-section">
+        <h2>알림</h2>
+        <div class="notification-item">
+        <img src="" alt="User">
+        <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
+        </div>
+
+        <div class="notification-item">
+        <img src="" alt="User">
+        <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
+        </div>
+    </div>
 </div>
 </template>
 
@@ -43,11 +44,23 @@ export default {
         }
 
         if(inputText.value != ''){
-                this.$axios.post("/Search", param)
+            if(inputText.value.substr(0,1) == '#'){
+                // 게시글 검색
+                // inputText.value.substr(1, inputText.value.length)
+                // 첫 글자 # 일때 게시글 검색하는 post로 ajax요청.
+                // 첫 글자 #을 제외한 나머지 문자열로 해시태그 검색
+                console.log("게시글 검색 모드");
+                console.log("찾으려는 게시글 ------------");
+                console.log(inputText.value.substr(1, inputText.value.length));
+            }else{
+                console.log("유저 검색 모드");
+                // 유저 검색
+                this.$axios.post("/SearchUser", param)
                 .then((response) =>{
                     this.searchUser = response.data.obj;
                 })
-        }else{ // 이거 서버에서 처리해야함.
+            }
+        }else{
             this.searchUser = [];
         }
       },

@@ -25,19 +25,20 @@ instance.interceptors.request.use((config) =>{
   return config;
 });
 
-//응답 인터셉터
-instance.interceptors.response.use(
-  (response) => {
-    // HTTP.OK 등 성공 응답은 그대로 전해진다.
-    // 이것도 뭔가 처리할거면 처리해도 괜찮을 듯
-    return response;
-  },
-  (error) => {
-    // 그 외의 응답은 해당 부분으로 처리할 겁니다. 
-    // pinia로 refreshToken 바로 요청해도 좋고 등등.
-    // 지훈이형 부탁해요.  "봐서"
-    return Promise.reject(error);
-  }
-);
+
+// //응답 인터셉터
+// instance.interceptors.response.use(
+//   (response) => {
+//     // HTTP.OK 등 성공 응답은 그대로 전해진다.
+//     // 이것도 뭔가 처리할거면 처리해도 괜찮을 듯
+//     return response;
+//   },
+//   (error) => {
+//     // 그 외의 응답은 해당 부분으로 처리할 겁니다. 
+//     // pinia로 refreshToken 바로 요청해도 좋고 등등.
+//     // 지훈이형 부탁해요.
+//     return Promise.reject(error);
+//   }
+// );
 
 export default instance;
