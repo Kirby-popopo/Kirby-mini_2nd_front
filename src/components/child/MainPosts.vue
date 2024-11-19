@@ -1,14 +1,28 @@
-<script setup>
-
+<script>
+export default {
+    components: {
+    },
+    data(){
+        return {
+        }
+    },
+    props:{
+        post: Object,
+    },
+    methods: {
+   
+    },
+};
 </script>
 
 <template>
 <div class="post-header">
+        <!-- pinia 에서 유저 이름, 이미지로 설정 -->
         <img src="https://media.istockphoto.com/id/466167557/ko/%EC%82%AC%EC%A7%84/%EC%8B%A0%EC%83%9D%EC%95%84-chick.jpg?s=612x612&w=0&k=20&c=94vZS_L2t47Yb1DtHTYv1VBjVP6Ecu_SgmH79aCfEfE=" alt="병아리 프로필">
         <span class="username">병아리</span>
     </div>
     <div class="post-image">
-        <img src="https://img.freepik.com/premium-photo/fried-rice-with-fried-egg-delicious-food-photography-illustration-created-with-generative-ai_115122-6028.jpg" alt="계란프라이">
+        <img :src="post.image_url" alt="계란프라이">
     </div>
     <div class="post-actions">
         <button>❤️</button>
@@ -21,9 +35,9 @@
     </div>
     <div class="post-content">
         <span class="username">병아리</span>
-        <span class="content">2024-10-02</span>
-        <span class="content" id="full-content" style="display: none;">갓생살자<br>#아침 #맛있다</span>
-        <span class="more" id="show-more" onclick="toggleContent()">더 보기</span>
+        <span class="content" >{{ post.contents }}</span>
+        <!-- <span class="content" id="full-content" style="display: none;">갓생살자<br>#아침 #맛있다</span> -->
+        <!-- <span class="more" id="show-more" onclick="toggleContent()">더 보기</span> -->
     </div>
     <div class="post-comments">
         <p>댓글 2개</p>
@@ -39,10 +53,9 @@
     </div>
 </template>
 
-<style scoped>
+<style>
     .post-header {
         display: flex;
-        align-items: center;
         padding: 16px;
         
     }
@@ -60,6 +73,7 @@
         height: auto;
     }
     .post-actions {
+        display: flex;
         padding: 4px 16px;
     }
     .post-actions button {

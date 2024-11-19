@@ -1,8 +1,18 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/useAuthStores';
 
+// const instance = axios.create({
+//   baseURL: 'http://localhost:8090/',  
+//   timeout: 10000,  
+//   headers: {
+//     'Content-Type': 'application/json',
+//     'X-Requested-With': 'XMLHttpRequest'    //AJAX 요청임을 알림
+//   }
+// });
+
+// 지원이 테스트용
 const instance = axios.create({
-  baseURL: 'http://localhost:8090/',  
+  baseURL: 'http://192.168.5.72:8090/',
   timeout: 10000,  
   headers: {
     'Content-Type': 'application/json',
@@ -13,7 +23,7 @@ const instance = axios.create({
 /**
  *  아래 인터셉터는 추후 어떻게 적용할 지 생각해 본 후 결정.
  */
-//요청 인터셉터
+// 요청 인터셉터
 // instance.interceptors.request.use((config) =>{
 //   // pinia 스토어에서 토큰을 가져와 요청 전에 먼저 헤더에 토큰을 담아준다.
 //   // pinia로 토큰 관리하고 아이디도 토큰안에 넣어두고 사용하는 것으로.
