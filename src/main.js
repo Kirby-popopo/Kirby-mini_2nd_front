@@ -7,7 +7,9 @@ import axios from './util/axios';
 import App from './App.vue';
 import SideBar from './components/SideBar.vue';
 import router from './router/router';
+import { createPinia } from 'pinia';
 
+const pinia = createPinia();
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 
@@ -16,4 +18,5 @@ app.config.globalProperties.$axios = axios;
 app.component('SideBar', SideBar);
 app.use(createBootstrap())
 app.use(router);
+app.use(pinia);
 app.mount('#app');

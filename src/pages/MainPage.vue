@@ -11,11 +11,12 @@
 </template>
 
 <script setup>
-
+import { useAuthStore } from '@/stores/useAuthStores';
+import { ref, reactive, provide, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 import MainPosts from '@/components/child/MainPosts.vue';
 import EndPosts from '@/components/child/EndPosts.vue';
-import { ref, reactive, provide, onMounted } from 'vue';
-import axios from 'axios';
 
 const posts = reactive([]);
 const page = ref(0);
@@ -50,11 +51,6 @@ const getPosts = ()=>{
         })
     }
 
-onMounted(() => {
-    console.log("mounted 실행");
-    getPosts();
-})
-
 onUnmounted(() => {
     posts = [];
     page.value = 0;
@@ -62,7 +58,33 @@ onUnmounted(() => {
 })
 
 provide('posts', posts);
+const router = useRouter();
+        
+onMounted(() => {
+            // 현재 URL에서 Access Token 추출
+            const hash = window.location.hash;
+            if(hash.includes("access_token")){
+                const params = new URLSearchParams(hash.substring(1));
+                const accessToken = params.get('access_token');
 
+                if(accessToken) {
+                    // Access Token을 pinia에 저장
+                    useAuthStore.setToken('accessToken', accessToken);
+                    window.history.replaceState(null, null, window.location.pathname);
+                    console.log('로그인 성공! Access Token:', accessToken);
+                } else {
+                    console.error('Access Token이 존재하지 않습니다.');
+                }
+            } else {
+                // Token이 없는 경우 로그인 페이지로
+                console.error('로그인 실패');
+                router.push('/login');
+            }
+                getPosts();
+        });
+        return {};
+    }
+};
 </script>
 
 <style>
