@@ -10,7 +10,7 @@ const instance = axios.create({
   }
 });
 
-/**
+/* *
  *  아래 인터셉터는 추후 어떻게 적용할 지 생각해 본 후 결정.
  */
 //요청 인터셉터
@@ -18,9 +18,9 @@ instance.interceptors.request.use((config) =>{
   // pinia 스토어에서 토큰을 가져와 요청 전에 먼저 헤더에 토큰을 담아준다.
   // pinia로 토큰 관리하고 아이디도 토큰안에 넣어두고 사용하는 것으로.
   const authStore = useAuthStore();
-  const accessTokentoken = authStore.accessTokentoken;
-  if (accessTokentoken) {
-      config.headers['Authorization'] = `Bearer ${accessTokentoken}`;
+  const accessToken = authStore.accessToken;
+  if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
   }
   return config;
 });

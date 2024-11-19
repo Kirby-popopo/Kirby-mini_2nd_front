@@ -8,16 +8,19 @@
             <img src="/img/1.jpg" alt="k-stargram" class="logo" width="200" height="51">
 
             <form id="loginForm" method="post" @submit.prevent="login">
-                <input type="text" name="userId" placeholder="전화번호, 사용자 이름 또는 이메일" @keyup.enter="login" required v-model="state.form.userId">
-                <input type="password" name="userPw" placeholder="비밀번호" @keyup.enter="login" required v-model="state.form.userPw">
+                <input type="text" name="userId" placeholder="전화번호, 사용자 이름 또는 이메일" required v-model="state.form.userId">
+                <input type="password" name="userPw" placeholder="비밀번호" required v-model="state.form.userPw">
                 <button type="submit" >로그인</button>
             </form>
 
             <div id="errorMessage" class="error-message"> {{ state.errorMessage }} </div>
 
             <div class="divider">또는</div>
-            <div class="facebook-login">
-                <a href="#">Facebook으로 로그인</a>
+
+            <!-- OAuth 로그인 버튼 추가 -->
+            <div class="OAuth-login">
+                <button @click="redirectToGoogle">Google로 로그인</button>
+                <button @click="redirectToFacebook">Facebook으로 로그인</button>
             </div>
             <div class="forgot-password">
                 <a href="#">비밀번호를 잊으셨나요?</a>
@@ -32,37 +35,54 @@
 </template>
 
 <script>
-import { reactive } from "vue";
-import axios from 'axios';
+import { reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/useAuthStores';
+//import axios from 'axios';
+import axios from '@/util/axios';
 
 export default {
     setup() {
-
         const state = reactive({
             form: {
                 userId: "",
                 userPw: ""
             },
             errorMessage: "" // 반응성을 유지하며 선언
-        });
+        })
+        // OAuth2 
+        const redirectToGoogle = () => {
+            const clientId = '443880299005-rle9rs9bcdpakhjv59o3v9rhk311ep4b.apps.googleusercontent.com';
+            const redirectUri = 'http://localhost:5173/';
+            const responseType = 'token';
+            const scope = 'email';
+
+            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
+            
+            window.location.href = authUrl;
+        };
         
-    
-    
-    const login = () => {
-        axios.post("http://localhost:8090/api/auth/login", {
-            userId: state.form.userId, // 입력한 userId 전달
-            userPw: state.form.userPw  // 입력한 userPw 전달
-            },{
-            headers : {"X-Requested-With": "XMLHttpRequest"}
+    const router = useRouter();
+    const authStore = useAuthStore();
+        
+        const login = () => {
+            axios.post('/api/auth/login', {
+                userId: state.form.userId,
+                userPw: state.form.userPw
             })
-            .then((res) => {
-                console.log(res.headers);
-                sessionStorage.setItem("token", res.headers.get('authorization'));
+
+        .then((res) => {
+            const token = res.headers['Authorization'] || res.headers['authorization'];
+            if(token){
+                authStore.setToken(token); //pinia 스토어에 토큰 저장
                 window.alert(res.data);
-                console.log(userId);
-                //메인 페이지로 이동
-                router.push('/');
-            }).catch((error) => {
+                router.push('/'); //메인 페이지로 이동
+            } else {
+                console.warn('Authorization 헤더가 없습니다.');
+                state.errorMessage = '로그인에 실패하였습니다.';
+        }
+        }) 
+        .catch((error) => {
                 // 로그인 실패
                 state.errorMessage = "잘못된 비밀번호입니다. 다시 확인하세요.";
                 console.log(state.errorMessage);
@@ -71,27 +91,28 @@ export default {
 
         const logout = () => {      
             axios.get("http://localhost:8090/api/auth/logout").then((res) => {
-        if (res.headers['authorization'] == 'delete') {
-            sessionStorage.removeItem("token")
-        }
-        window.alert(res.data);
-        }).catch(() => {
-        window.alert("로그아웃을 수행하는 동안 오류가 발생하였습니다..");
-        });
+                if (res.headers['Authorization'] == 'delete') {
+                    authStore.clearToken();
+                }
+                window.alert(res.data);
+            }).catch(() => {
+            window.alert("로그아웃을 수행하는 동안 오류가 발생하였습니다..");
+            });
     }
 
         const check = () => {      
             axios.get("http://localhost:8090/api/auth/check",{
                 headers: {
-                'Authorization': sessionStorage.getItem("token")
+                'Authorization': authStore.token,
                 }
             }).then((res) => {       
         window.alert(res.data);
             });
         }
 
-        return {state, login, logout, check}
+        return {state, login, logout, check, redirectToGoogle}
     }
+
 };
 
 </script>

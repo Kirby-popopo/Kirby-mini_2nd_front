@@ -5,8 +5,14 @@ export const useAuthStore = defineStore('auth', () => {
     const token = ref('');
 
     function setToken(accessToken){
-        token.value = accessToken
+        token.value = accessToken;
     }
 
-    return { token , setToken}
-})
+    function clearToken() {
+        token.value = '';
+    }
+
+    const isAuthenticated = () => !!token.value;
+
+    return { token , setToken, clearToken, isAuthenticated };
+});
