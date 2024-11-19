@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Bootstrap Example</title>
     <style>
         div{
-            border: solid 1px red;
+            border: solid 2px red;
         }
-        .row{
-            height: 100%;
-            width: 100%;
-        }
-
     </style>
+    
 </head>
 <body>
-    <div class="container text-center">
+    <div class="container">
         <div class="row">
-          <div class="col-3 ">.col-6 .col-sm-4</div>
-          <div class="col-9 ">.col-6 .col-sm-4</div>
+            <div class="col-3">
+                Left Sidebar
+            </div>
+            <div class="col-9">
+                <div class="p-3 bg-warning">Content 1</div>
+                <div class="p-3 bg-danger">Content 2</div>
+                <div class="p-3 bg-info">Content 3</div>
+            </div>
         </div>
-      </div>
+    </div>
 </body>
-<script type="module" src="/src/main.js"></script>
 </html>

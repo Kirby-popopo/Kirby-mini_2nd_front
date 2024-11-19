@@ -1,33 +1,66 @@
 <template>
-<div class="container">
-    <div class="post">
-        <MainPosts/>
+<div class="main-container">
+    <div class="post" v-for="post in posts">
+        <MainPosts :post="post"/>
     </div>
-    <div class="post">
-        <MainPosts/>
-    </div>
-    <div class="post">
-        <MainPosts/>
-    </div>
-    <div class="post">
-        <MainPosts/>
-    </div>
-    <div class="end-posts">
+    
+    <div class="end-posts" v-show="showEndPosts">
         <EndPosts/>
     </div>
 </div>
 </template>
 
-<script>
+<script setup>
 import { useAuthStore } from '@/stores/useAuthStores';
-import { onMounted } from 'vue';
+import { ref, reactive, provide, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+import MainPosts from '@/components/child/MainPosts.vue';
+import EndPosts from '@/components/child/EndPosts.vue';
 
-export default {
-    setup() {
-        const router = useRouter();
+const posts = reactive([]);
+const page = ref(0);
+const showEndPosts = ref(false);
+
+const getPosts = ()=>{
+    console.log("getPosts 실행");
+    //pinia 에서 받아오게 수정할 것임.
+    const param = {
+        userId: '1234',
+        page: page.value,
+    }
+
+    console.log(param);
+    
+    axios.post("http://localhost:8090/mainPage", param)
+        .then((response) =>{
+            console.log("axios 실행");
+            console.log(response);
+            const responseData = response.data.obj.content;
+            console.log(responseData)
+                if(responseData.length != 0){
+                    for(var post of responseData){
+                        console.log(post);
+                        posts.push(post);
+                    }
+                }else{
+                    showEndPosts.value = true;
+                }
+
+            page.value++;
+        })
+    }
+
+onUnmounted(() => {
+    posts = [];
+    page.value = 0;
+    showEndPosts.value = false;
+})
+
+provide('posts', posts);
+const router = useRouter();
         
-        onMounted(() => {
+onMounted(() => {
             // 현재 URL에서 Access Token 추출
             const hash = window.location.hash;
             if(hash.includes("access_token")){
@@ -47,6 +80,7 @@ export default {
                 console.error('로그인 실패');
                 router.push('/login');
             }
+                getPosts();
         });
         return {};
     }
@@ -55,35 +89,26 @@ export default {
 
 <style>
 
-.container {
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 100%; /* 부모 높이에 맞춤 */
+.main-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    width: 50%;
 }
 
 .post {
-  background-color: #1e1e1e;
-  border: 1px solid #2c2c2c;
-  border-radius: 3px;
-  margin-bottom: 20px;
-  width: 100%;
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    color: white;
 }
 .end-posts {
-  background-color: #1e1e1e;
-  border: 1px solid #2c2c2c;
-  border-radius: 3px;
-  margin-bottom: 60px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-@media (max-width: 1200px) {
-.container {
-max-width: calc(100% - 40px);
-padding: 20px;
-}
-}
 
 </style>
