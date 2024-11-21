@@ -3,7 +3,7 @@
     <div class="sidebar-list">
       <div class="sidebar-header">
         <h2>채팅방 목록</h2>
-        <button @click="openModal" class="create-room-btn">채팅방 생성</button>
+        <!-- <button @click="openModal" class="create-room-btn">채팅방 생성</button> -->
       </div>
       <ul class="message-list">
         <li v-for="chatRoom in chatRoomList" :key="chatRoom.roomId" class="message-item">
