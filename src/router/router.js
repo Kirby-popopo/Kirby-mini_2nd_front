@@ -46,7 +46,8 @@ const routes = [
         name: 'OAuthCallback',
         component: OAuthCallback,
         meta: { requiresAuth: false }
-    }
+    },
+    {
         path: '/chat-room/:id',  // 채팅방 상세 페이지 라우팅
         name: 'ChatRoom',
         component: ChatRoom,  // ChatRoom 컴포넌트
