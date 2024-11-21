@@ -9,6 +9,9 @@ import { useAuthStore } from "@/stores/useAuthStores"
 import OAuthCallback from '@/pages/OAuthCallback.vue'
 import axios from "axios"
 
+import RoomList from '../views/chat/RoomList.vue'  // 채팅방 출력 컴포넌트 임포트
+import ChatRoom from '../views/chat/ChatRoom.vue' // 채팅방 입장 (상세) 컴포넌트 임포트
+
 const routes = [
     {
         path:'/',
@@ -44,6 +47,17 @@ const routes = [
         component: OAuthCallback,
         meta: { requiresAuth: false }
     }
+        path: '/chat-room/:id',  // 채팅방 상세 페이지 라우팅
+        name: 'ChatRoom',
+        component: ChatRoom,  // ChatRoom 컴포넌트
+        props: true  // URL 파라미터를 컴포넌트로 전달
+    },
+    {
+        path: '/roomList',
+        name: 'RoomList', // 채팅방 목록 라우터
+        component: RoomList
+    },
+
 ]; // 라우팅 패스, 컴포넌트 등 정의
 
 const router = createRouter({
