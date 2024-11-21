@@ -7,7 +7,7 @@
       </div>
       <ul class="message-list">
         <li v-for="chatRoom in chatRoomList" :key="chatRoom.roomId" class="message-item">
-          <p>채팅방 이름: {{ chatRoom.room_name }}</p>
+          <p>채팅방 이름: {{ chatRoom.roomName }}</p>
           <router-link :to="`/chat-room/${chatRoom.roomId}`" class="enter-room-link">채팅방 입장</router-link>
         </li>
       </ul>
@@ -15,8 +15,8 @@
 
     <!-- 채팅방 생성 모달 -->
     <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
-      <div class="modal-new" @click.stop>
-        <h2 class="modal-new-title">새로운 채팅방 생성</h2>
+      <div class="modal" @click.stop>
+        <h2 class="modal-title">새로운 채팅방 생성</h2>
         <input
           v-model="newRoomName"
           @keyup.enter="createRoom"
@@ -57,7 +57,7 @@ export default {
     createRoom() {
       if (this.newRoomName.trim()) {
         axios
-          .post("http://localhost:8090/api/chat/createRoom", {
+          .post("http://192.168.5.24:8090/api/chat/createRoom", {
             room_name: this.newRoomName,
           })
           .then((response) => {
@@ -167,17 +167,17 @@ export default {
 
 .modal-overlay {
   position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.modal-new {
+.modal {
   background-color: #262626;
   padding: 20px;
   border-radius: 8px;
@@ -186,7 +186,7 @@ export default {
   color: white;
 }
 
-.modal-new-title {
+.modal-title {
   margin-bottom: 20px;
   font-size: 18px;
 }
