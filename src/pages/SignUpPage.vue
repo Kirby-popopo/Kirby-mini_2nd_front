@@ -55,7 +55,10 @@
 
 <script setup>
 import { reactive, ref, computed, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
+
+const router = useRouter();
 
 const form = reactive({
     userInput: '',
@@ -135,6 +138,8 @@ const signup = async () => {
             gender: form.gender
         });
         alert('회원가입이 성공적으로 완료되었습니다!');
+        router.push("/");
+
     } catch (error) {
         console.error('회원가입 에러:', error);
     }

@@ -4,7 +4,7 @@ import { reactive, ref } from 'vue'
 export const useAuthStore = defineStore('auth', () => {
     const token = ref('');
     const userDetail = reactive({
-        userId : '',
+        userId : 1234,
         userDescription : '',
         userImageUrl : '',
         userGender: '',

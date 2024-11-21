@@ -1,17 +1,26 @@
 <script>
+import { useAuthStore } from '@/stores/useAuthStores';
 import Menu from './child/Menu.vue';
+import CreatePost from './child/CreatePost.vue';
 
 export default {
   name: "SideBar",
   components: {
     Menu,
+    CreatePost
   },
   data() {
     return {
       isMenuVisible: false,
+      isCreatePost: false,
       Psection: '',
     };
   },
+  computed:{
+    authStore(){
+         return useAuthStore();
+        }
+    },
   methods: {
     ClickMenu(selcetMenu) {
       switch (selcetMenu) {
@@ -31,6 +40,9 @@ export default {
             this.isMenuVisible = true;
           }
           break;
+        case 'create':
+          this.isCreatePost = true;
+          break;
         default:
         this.isMenuVisible = false;
       }
@@ -42,6 +54,7 @@ export default {
 </script>
 
 <template>
+    <CreatePost v-if="isCreatePost" :isModalOpen @customEvent=""></CreatePost>
     <Menu v-if="isMenuVisible" :section="Psection"></Menu>
     <div class="sidebar">
       <router-link to="/">
@@ -66,23 +79,24 @@ export default {
             <span class="sidebar-text">탐색 탭</span>
         </div>  
         
+      <router-link to="/roomList">
         <div class="sidebar-item">
             <img src="https://img.icons8.com/material-outlined/24/ffffff/facebook-messenger.png" alt="메시지">
             <span class="sidebar-text">메시지</span>
         </div>  
-
+      </router-link>
         <div class="sidebar-item" @click="ClickMenu('alram')">
             <img src="https://img.icons8.com/material-outlined/24/ffffff/like.png" alt="알림">
             <span class="sidebar-text">알림</span>
         </div>  
 
-        <div class="sidebar-item">
+        <div class="sidebar-item" @click="ClickMenu('create')">
             <img src="https://img.icons8.com/material-outlined/24/ffffff/plus-math.png" alt="만들기">
             <span class="sidebar-text">만들기</span>
         </div> 
 
         <!-- 로그인 정보를 받아서 처리 예정 -->
-      <router-link :to="{ path: '/profile', query: { userId: '1234' } }">
+      <router-link :to="{ path: '/profile', query: { userId: authStore.userDetail.userId } }">
         <div class="sidebar-item" @click="ClickMenu('close')">
             <img src="https://img.icons8.com/material-outlined/24/ffffff/user-male-circle.png" alt="프로필">
             <span class="sidebar-text">프로필</span>

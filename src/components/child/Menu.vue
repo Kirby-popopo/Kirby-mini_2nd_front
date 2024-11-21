@@ -55,7 +55,7 @@ export default {
             }else{
                 console.log("유저 검색 모드");
                 // 유저 검색
-                this.$axios.post("/SearchUser", param)
+                this.$axios.post("/api/SearchUser", param)
                 .then((response) =>{
                     this.searchUser = response.data.obj;
                 })

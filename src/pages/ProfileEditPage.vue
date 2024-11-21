@@ -1,28 +1,35 @@
 <script>
+import { useAuthStore } from '@/stores/useAuthStores';
+
 export default {
     components: {
     },
     data(){
         return {
+            userId: '',
             descriptionText: '',
             selectedFile: '',
             selectedFileName: '',
             //profileImagePreview: null,
             profileImage: '',
+            
         }
     },
-    mounted(){
-        this.getUser();
-    },
+    computed:{
+        authStore(){
+            return useAuthStore();
+            }
+        },
     methods: {
         async getUser(){
             // pinia에서 id 꺼내와서 사용
-            const user = await this.$axios.post('/getUser', {id:'1234'});
-            
-            this.profileImage = user.data.obj.profileImage;
-            this.selectedFileName = user.data.obj.profileImage;
-            this.descriptionText = user.data.obj.description;
-            this.$refs.gender.value = user.data.obj.gender;
+            console.log("실행");
+            const user = await this.$axios.post('/api/GetUser', { userId:this.authStore.userDetail.userId });
+            console.log(user);
+            this.profileImage = user.data.obj.userProfileImage;
+            this.selectedFileName = user.data.obj.userProfileImage;
+            this.descriptionText = user.data.obj.userDescription;
+            this.$refs.gender.value = user.data.obj.userGender;
         },
         selectImage(){
             this.$refs.fileInput.click();
@@ -46,28 +53,34 @@ export default {
             formData.append('updateImageName', this.selectedFileName);
             formData.append('gender', this.$refs.gender.value); 
             // pinia에서 받아오기로 바꿔야함.
-            formData.append('id', "1234");
+            formData.append('id', this.authStore.userDetail.userId);
 
             try{
-                const result = await this.$axios.post('/updateProfile', formData, {
+                const result = await this.$axios.post('/api/updateProfile', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',  // 파일 처리 관련 헤더.
                     },
                 }
             );
             
-            this.$router.push("/profileEdit",);
+            this.$router.push(
+                {
+                    name :'profile', query: { userId: this.authStore.userDetail.userId }
+                });
 
             }catch(err){
                 console.log(err);
             }
         }
     },
+    mounted(){
+        this.getUser();
+    },
 };
 </script>
 
 <template>
-    <div class="container">
+    <div class="container-profile">
     <h1>프로필 편집</h1>
 
     <!-- @submit.prevent="submitChangeProfile"
@@ -77,11 +90,11 @@ export default {
         <div class="profile-item">
             <img v-bind:src="profileImage" alt="프로필 이미지" id="profileImage">
         <div>
-            <div class="username">mysk423</div>
-            <div >문태성</div>
+            <div class="username">{{ authStore.userDetail.userId }}</div>
+            <div >{{authStore.userDetail.userName}}</div>
         </div>
             <button class="change-button" @click="selectImage">사진 변경</button>
-            <input type="file" ref="fileInput" @change="handleImageUpload" accept="image/*" style="display: none;">
+            <input type="file" ref="fileInput" @change="handleImageUpload" style="display: none;">
         </div>
 
         <div class="form-group">
@@ -120,11 +133,11 @@ export default {
 </template>
 
 <style lang="css">
-        .container {
-        position: fixed;
-        left: 50%; /* 화면의 50% 위치로 이동 */
-        top: 0; /* 상단에 고정 */
-        transform: translateX(-50%); /* 요소의 수평 중앙으로 이동 */
+        .container-profile {
+            position: fixed;
+            left: 50%; /* 화면의 50% 위치로 이동 */
+            top: 0; /* 상단에 고정 */
+            transform: translateX(-50%); /* 요소의 수평 중앙으로 이동 */
             max-width: 600px;
             margin: 0 auto;
             background-color: #121212;
@@ -134,6 +147,7 @@ export default {
             justify-content: center;
             align-items: center;
             color: white;
+            width: 500px;
         }
         h1 {
             margin-top: 0;
@@ -162,6 +176,7 @@ export default {
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
+            width: 300px;
         }
         .form-group {
             margin-bottom: 20px;

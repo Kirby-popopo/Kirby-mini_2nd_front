@@ -321,8 +321,6 @@ export default {
 }
 
 .chat-main {
-  flex: 1;
-  display: flex;
   flex-direction: column;
   background-color: #000;
   color: white;

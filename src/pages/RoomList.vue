@@ -35,9 +35,9 @@
 
       <!-- 모달 -->
       <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
-        <div class="modal" @click.stop>
-          <h2 class="modal-title">새로운 메시지</h2>
-          <div class="input-group">
+        <div class="modal-new-message" @click.stop>
+          <h2 class="modal-new-title">새로운 메시지</h2>
+          <div class="modal-input-group">
             <label for="recipient">받는 사람:</label>
             <input
               type="text"
@@ -162,17 +162,15 @@ export default {
 
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  /* top: 0;
+  left: 0; */
+  width: 50%;
+  height: 50%;
   background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  z-index: 9999;
 }
 
-.modal {
+.modal-new-message {
   background-color: #262626;
   padding: 20px;
   border-radius: 12px;
@@ -181,12 +179,12 @@ export default {
   text-align: center;
 }
 
-.modal-title {
+.modal-new-title {
   margin-bottom: 20px;
   font-size: 20px;
 }
 
-.input-group {
+.modal-input-group {
   margin-bottom: 20px;
   text-align: left;
 }

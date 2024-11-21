@@ -1,16 +1,56 @@
 <script>
+import { useAuthStore } from '@/stores/useAuthStores';
+
 export default {
     components: {
     },
+    mounted(){
+        // 해당 게시글의 모든 댓글.
+        const param = {
+            postPk: this.post.post_pk,
+        }
+        axios.post("http://localhost:8090/api/comment", param, {
+            headers: "",    
+        })
+        .then((response) =>{
+            console.log(response);
+            if(response.data.obj != null){
+                const responseData = response.data.obj.content;
+                if(responseData != null){
+                    for(var comment of responseData){
+                        this.comments.push(comment);
+                    }
+                }
+            }else{
+                    
+            }
+        })
+    },
     data(){
         return {
+            comments:[],
+            commentHide:true,
+        }
+    },
+    computed:{
+        isMedia(){
+            if(this.post.image_url == null){
+                return false;
+            }else{
+                return true;
+            }
+        },
+        authStore(){
+            return useAuthStore();
         }
     },
     props:{
         post: Object,
     },
     methods: {
-   
+        toggleComments() {
+            this.commentHide = !this.commentHide;
+        },
     },
 };
 </script>
@@ -18,12 +58,16 @@ export default {
 <template>
 <div class="post-header">
         <!-- pinia 에서 유저 이름, 이미지로 설정 -->
-        <img src="https://media.istockphoto.com/id/466167557/ko/%EC%82%AC%EC%A7%84/%EC%8B%A0%EC%83%9D%EC%95%84-chick.jpg?s=612x612&w=0&k=20&c=94vZS_L2t47Yb1DtHTYv1VBjVP6Ecu_SgmH79aCfEfE=" alt="병아리 프로필">
-        <span class="username">병아리</span>
+        <!-- <img :src="authStore.userDetail.userImageUrl" alt=""> -->
+        <img src="http://localhost:8090/images/default.jpg" alt="">
+        <span class="username">{{ post.user_id }}</span>
     </div>
     <div class="post-image">
-        <img :src="post.image_url" alt="계란프라이">
+        <img :src="post.image_url" v-show="isMedia" alt="계란프라이">
     </div>
+        <div class="embed-responsive embed-responsive-4by3" v-show="!isMedia">
+			<video class="embed-responsive-item" :src="post.media_url" controls autoplay></video>
+		</div>
     <div class="post-actions">
         <button>❤️</button>
         <button>💬</button>
@@ -31,7 +75,7 @@ export default {
         <button class="save-button">🔖</button>
     </div>
     <div class="post-likes">
-        뱀님 외 2명이 좋아합니다
+        {{ post.likes_count }}명이 좋아합니다.
     </div>
     <div class="post-content">
         <span class="username">병아리</span>
@@ -41,11 +85,13 @@ export default {
     </div>
     <div class="post-comments">
         <p>댓글 2개</p>
-        <div id="comments" style="display: none;">
-            <p><span class="username">뱀</span> 맛있겠다 :)</p>
-            <p><span class="username">사자</span> @호랑이 갓생 가보자고</p>
+        <span v-if="commentHide" class="more" id="show-comments" @click="toggleComments">댓글 모두 보기</span>
+        <span v-if="!commentHide" class="more" id="show-comments" @click="toggleComments">댓글 숨기기</span>
+        <div id="comments" v-show="!commentHide">
+            <p v-for="comment of comments" :key="comment">
+                <span class="username"> {{ comment.user_id }} </span>{{ comment.content }}
+            </p>
         </div>
-        <span class="more" id="show-comments" onclick="toggleComments()">댓글 모두 보기</span>
     </div>
     <div class="comment-input">
         <input type="text" id="comment-input" placeholder="댓글 달기...">

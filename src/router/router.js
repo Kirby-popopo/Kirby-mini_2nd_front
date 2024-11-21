@@ -6,8 +6,8 @@ import ProfileEdit from "@/pages/ProfileEditPage.vue"
 import login from '@/pages/LoginPage.vue'
 import signup from '@/pages/SignUpPage.vue'
 
-import RoomList from '../views/chat/RoomList.vue'  // 채팅방 출력 컴포넌트 임포트
-import ChatRoom from '../views/chat/ChatRoom.vue' // 채팅방 입장 (상세) 컴포넌트 임포트
+import RoomList from '@/pages/RoomList.vue'  // 채팅방 출력 컴포넌트 임포트
+import ChatRoom from '@/pages/ChatRoom.vue' // 채팅방 입장 (상세) 컴포넌트 임포트
 
 const routes = [
     {
@@ -16,6 +16,7 @@ const routes = [
     },
     {
         path:'/profile',
+        name: "profile",
         component: profile,
     },
     {

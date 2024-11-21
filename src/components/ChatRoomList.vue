@@ -15,8 +15,8 @@
 
     <!-- 채팅방 생성 모달 -->
     <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
-      <div class="modal" @click.stop>
-        <h2 class="modal-title">새로운 채팅방 생성</h2>
+      <div class="modal-new" @click.stop>
+        <h2 class="modal-new-title">새로운 채팅방 생성</h2>
         <input
           v-model="newRoomName"
           @keyup.enter="createRoom"
@@ -167,17 +167,17 @@ export default {
 
 .modal-overlay {
   position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.modal {
+.modal-new {
   background-color: #262626;
   padding: 20px;
   border-radius: 8px;
@@ -186,7 +186,7 @@ export default {
   color: white;
 }
 
-.modal-title {
+.modal-new-title {
   margin-bottom: 20px;
   font-size: 18px;
 }

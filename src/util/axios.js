@@ -10,9 +10,8 @@ import { useAuthStore } from '@/stores/useAuthStores';
 //   }
 // });
 
-// 지원이 테스트용
 const instance = axios.create({
-  baseURL: 'http://192.168.5.72:8090/',
+  baseURL: 'http://localhost:8090/',
   timeout: 10000,  
   headers: {
     'Content-Type': 'application/json',

@@ -70,7 +70,6 @@ export default {
                 userId: state.form.userId,
                 userPw: state.form.userPw
             })
-
         .then((res) => {
             const token = res.headers['Authorization'] || res.headers['authorization'];
             if(token){
@@ -85,7 +84,7 @@ export default {
         .catch((error) => {
                 // 로그인 실패
                 state.errorMessage = "잘못된 비밀번호입니다. 다시 확인하세요.";
-                console.log(state.errorMessage);
+                console.log(error);
             });
         };
 

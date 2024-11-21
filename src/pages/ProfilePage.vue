@@ -1,7 +1,11 @@
 <script>
+import { useAuthStore } from '@/stores/useAuthStores';
+import profilePosts from '@/components/child/profilePosts.vue';
+
 export default {
     name: "ProfilePage",
     components: {
+        profilePosts,
         },  
     watch: {
         '$route'() {
@@ -16,8 +20,18 @@ export default {
             userDescription: '',
             follower: [],
             following: [],
+            posts: [],
+            showEndPosts: false,
         };
     },
+    computed:{
+        isSameUser(){
+            return this.$route.query.userId == this.authStore.userDetail.userId;
+        },
+        authStore(){
+            return useAuthStore();
+            }
+        },
     methods: {
         async loadData(){
             // URL에서 쿼리 파라미터 가져오기
@@ -25,17 +39,46 @@ export default {
             const param = {
                 userId: this.userId,
             }
-            const response = await this.$axios.post("/Profile", param);
+            const response = await this.$axios.post("/api/Profile", param);
 
             this.userName = response.data.obj.userName;
-            this.userProfileImage = response.data.obj.profileImage;
+            this.userProfileImage = response.data.obj.userProfileImage;
             this.userDescription = response.data.obj.description;
             this.following = response.data.obj.following;
             this.follower = response.data.obj.follower;
-        }
-    },
+
+        },
+
+        getPosts(){
+            const param = {
+                userId: this.$route.query.userId,
+            }
+
+            console.log(param);
+            
+            this.$axios.post("/api/profilePage", param, {
+                headers: "",
+            })
+                .then((response) =>{
+                    
+                    if(response.data.obj != null){
+                        const responseData = response.data.obj;
+                        console.log(responseData);
+                        if(responseData != null){
+                            for(var post of responseData){
+                                this.posts.push(post);
+                            }
+                            console.log(this.posts);
+                        }
+                    }else{
+                            showEndPosts = true;
+                    }
+                })
+            }
+        },
     mounted() {
         this.loadData();
+        this.getPosts();
     },
 };
 </script>
@@ -47,10 +90,11 @@ export default {
             <h1 class="profile-username">{{ userName }}</h1>
             <div class="profile-actions">
                 <!-- 프로필 편집 버튼, 팔로우 버튼 -->
-            <router-link to="/profileEdit">
+            <router-link to="/profileEdit" v-show="isSameUser">
                 <button class="profile-button">프로필 편집</button><!-- 로그인 유저와 동일하면-->
             </router-link>
-                <button  class="profile-button" id="unfollow-button" >팔로잉</button><!-- 아닐시 -->
+
+                <button  class="profile-button" id="unfollow-button" v-show="!isSameUser" >팔로잉</button><!-- 아닐시 -->
 
                 <!-- 보관된 스토리 보기, 메시지 보내기 -->
                 <button class="profile-button">보관된 스토리 보기</button><!-- 로그인 유저와 동일하면-->
@@ -74,76 +118,75 @@ export default {
             <div class="profile-description">{{ userDescription }}</div>
         </div>
     </header>
+    <div>
+    <profilePosts :posts="posts" :show-end-posts="showEndPosts"></profilePosts>
+    </div>
 </template>
 
 <style lang="css">
     .profile-header {
-        max-width: 935px;
-        display: flex;
+        width: 100%;
+        margin: 0 auto;
         color: white;
+        display: flex;
     }
-    .profile-header {
-            display: flex;
-            align-items: flex-start;
-            max-width: 935px;
-            margin: 0 auto;
-        }
-        .profile-picture {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin-right: 100px;
-        }
-        .profile-info {
-            flex-grow: 1;
-        }
-        .profile-username {
-            font-size: 28px;
-            font-weight: 300;
-            margin-bottom: 12px;
-        }
-        .profile-actions {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .profile-button {
-            display: block;
-            background-color: #fafafa;
-            border: 1px solid #dbdbdb;
-            color: #262626;
-            padding: 5px 9px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 4px;
-            margin-right: 8px;
-            cursor: pointer;
-        }
-        .profile-button:hover {
-                    background-color: #efefef;
-                    border-color: #c7c7c7;
-                }
-        .settings-icon {
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-        }
-        .profile-stats {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        .stat {
-            margin-right: 40px;
-            font-size: 16px;
-        }
-        .stat-value {
-            font-weight: 600;
-        }
-        .profile-fullname {
-            font-weight: 600;
-            font-size: 16px;
-        }
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin-right: 100px;
+    }
+    .profile-info {
+        flex-grow: 1;
+    }
+    .profile-username {
+        font-size: 28px;
+        font-weight: 300;
+        margin-bottom: 12px;
+    }
+    .profile-actions {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .profile-button {
+        display: block;
+        background-color: #fafafa;
+        border: 1px solid #dbdbdb;
+        color: #262626;
+        padding: 5px 9px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 4px;
+        margin-right: 8px;
+        cursor: pointer;
+        width: 120px;
+        height: 50px;
+    }
+    .profile-button:hover {
+                background-color: #efefef;
+                border-color: #c7c7c7;
+            }
+    .settings-icon {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+    }
+    .profile-stats {
+        display: flex;
+        margin-bottom: 20px;
+    }
+    .stat {
+        margin-right: 40px;
+        font-size: 16px;
+    }
+    .stat-value {
+        font-weight: 600;
+    }
+    .profile-fullname {
+        font-weight: 600;
+        font-size: 16px;
+    }
 .following-button {
     background-color: #efefef;
     color: #000;
@@ -170,35 +213,5 @@ export default {
 }
 .profile-bio p {
     margin: 0;
-}
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-}
-.gallery-item {
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-}
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-@media (max-width: 735px) {
-    .profile-header {
-        flex-direction: column;
-        text-align: center;
-    }
-    .profile-picture {
-        margin-right: 0;
-        margin-bottom: 20px;
-    }
-    .profile-stats {
-        justify-content: center;
-    }
-    .gallery {
-        gap: 3px;
-    }
 }
 </style>
