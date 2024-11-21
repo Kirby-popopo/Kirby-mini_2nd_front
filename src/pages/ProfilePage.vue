@@ -78,15 +78,8 @@ export default {
 
 <style lang="css">
     .profile-header {
-        position: fixed;
-        left: 50%; /* 화면의 50% 위치로 이동 */
-        top: 0; /* 상단에 고정 */
-        transform: translateX(-50%); /* 요소의 수평 중앙으로 이동 */
         max-width: 935px;
-        width: 100%; /* 화면 크기에 맞춰 최대 너비 */
         display: flex;
-        justify-content: center;
-        align-items: center;
         color: white;
     }
     .profile-header {

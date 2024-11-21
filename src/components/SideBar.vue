@@ -97,18 +97,14 @@ export default {
     </div>
     
 </template>
-<style lang="css" scoped>
+<style lang="css">
+
 .sidebar {
     background-color: #000;
     border: 3px solid #121212;
     color: #fff;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    overflow-y: auto;
+    height: 100%;
     width: 200px;
-    z-index: 500; /* 사이드바의 z-index 설정 */
 }
 
 .sidebar-item {

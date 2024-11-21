@@ -1,8 +1,18 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/useAuthStores';
 
+// const instance = axios.create({
+//   baseURL: 'http://localhost:8090/',  
+//   timeout: 10000,  
+//   headers: {
+//     'Content-Type': 'application/json',
+//     'X-Requested-With': 'XMLHttpRequest'    //AJAX 요청임을 알림
+//   }
+// });
+
+// 지원이 테스트용
 const instance = axios.create({
-  baseURL: 'http://localhost:8090/',  
+  baseURL: 'http://192.168.5.72:8090/',
   timeout: 10000,  
   headers: {
     'Content-Type': 'application/json',
