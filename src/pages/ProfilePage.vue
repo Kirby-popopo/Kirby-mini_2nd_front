@@ -71,7 +71,7 @@ export default {
                             console.log(this.posts);
                         }
                     }else{
-                            showEndPosts = true;
+                            this.showEndPosts = true;
                     }
                 })
             }

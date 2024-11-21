@@ -119,7 +119,7 @@
 
 <script>
 import ChatRoomList from "@/components/ChatRoomList.vue";
-import MenuSearchItem from "@/components/MenuSearchItem.vue";
+import MenuSearchItem from "@/components/child/MenuSearchItem.vue";
 import axios from "axios";
 
 export default {
