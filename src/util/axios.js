@@ -30,7 +30,7 @@ instance.interceptors.request.use((config) =>{
   const authStore = useAuthStore();
   const accessToken = authStore.accessToken;
   if (accessToken) {
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
+      config.headers['authorization'] = `${accessToken}`;
   }
   return config;
 });
