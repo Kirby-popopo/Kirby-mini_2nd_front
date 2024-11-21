@@ -62,24 +62,6 @@ const getPosts = ()=>{
 provide('posts', posts);
         
 onMounted(() => {
-    // 현재 URL에서 Access Token 추출
-    const hash = window.location.hash;
-    if(hash.includes("access_token")){
-        const params = new URLSearchParams(hash.substring(1));
-        const accessToken = params.get('access_token')
-        if(accessToken) {
-            // Access Token을 pinia에 저장
-            authStore.setToken(accessToken);
-            window.history.replaceState(null, null, window.location.pathname);
-            console.log('로그인 성공! Access Token:', accessToken);
-        } else {
-            console.error('Access Token이 존재하지 않습니다.');
-        }
-    } else {
-        // Token이 없는 경우 로그인 페이지로
-        // console.error('로그인 실패');
-        // router.push('/login');
-    }
     getPosts();
     window.addEventListener("scroll", scrollHandler);
 });
@@ -116,6 +98,5 @@ const scrollHandler = () => {
     justify-content: center;
     align-items: center;
 }
-
 
 </style>
