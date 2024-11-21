@@ -84,7 +84,7 @@ export default {
         <!-- <span class="more" id="show-more" onclick="toggleContent()">더 보기</span> -->
     </div>
     <div class="post-comments">
-        <p>댓글 2개</p>
+        <p>{{  }}</p>
         <span v-if="commentHide" class="more" id="show-comments" @click="toggleComments">댓글 모두 보기</span>
         <span v-if="!commentHide" class="more" id="show-comments" @click="toggleComments">댓글 숨기기</span>
         <div id="comments" v-show="!commentHide">
