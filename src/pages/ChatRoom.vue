@@ -17,16 +17,20 @@
       <!-- 채팅 메시지 목록 -->
       <div class="chat-body" ref="chatBody">
         <!-- 상대방 프로필 -->
-        <div class="chat-profile">
-          <img src="/img/테스트 이미지.png" alt="상대방 프로필" class="profile-avatar"/>
+        <div v-if="otherParticipant && otherParticipant.profileImageUrl" class="chat-profile" :key="otherParticipant.userId">
+          <img :src="otherParticipant.profileImageUrl || '/img/default-profile.png'" alt="상대방 프로필" class="profile-avatar" />
+
           <div class="profile-info">
-            <h2 class="profile-username">윤태현</h2>
+            <h2 class="profile-username">{{ otherParticipant.name }}</h2>
             <p class="profile-meta">Instagram</p>
           </div>
+
           <button class="profile-view-btn" @click="viewProfile">
             프로필 보기
           </button>
         </div>
+
+
         
         <!-- 메시지들 -->
         <div
@@ -37,7 +41,9 @@
           <!-- 상대방 메시지일 때만 프로필 이미지와 메시지 배치 -->
           <template v-if="msg.sender !== userId">
             <div class="message-wrapper">
-              <img src="/img/테스트 이미지.png" alt="상대방 프로필" class="profile-icon" />
+
+              <img :src="otherParticipant.profileImageUrl" alt="상대방 프로필" class="profile-icon" />
+
               <div class="message-content">
                 <div class="message-bubble">
                   {{ msg.message }}
@@ -103,6 +109,8 @@ export default {
       oldestMessageDate: null, // (스크롤링 관련) 가장 오래된 메시지의 날짜
       isFetching: false, // 데이터 요청 중인지 확인
       hasMoreMessages: true, // 추가 메시지가 더 있는지 확인
+      participants: [], // 참여자 목록
+      otherParticipant: null, // 초기값을 null로 변경하여 로드 전 상태 반영
     };
   },
   watch: {
@@ -120,7 +128,17 @@ export default {
       this.connectWebSocket(); // 새로운 WebSocket 연결
       this.loadMessages(); // 새로운 메시지 로드
       this.loadRoomInfo(); // 채팅방 정보 로드
+      this.loadOtherParticipant(); // 상대방 정보 로드 추가
     },
+
+    otherParticipant: {
+      handler(newValue) {
+        console.log("otherParticipant 변경됨: ", newValue);
+      },
+      immediate: true,
+      deep: true, // 객체 내부 변화를 감지
+    },
+
     messages: {
       handler() {
         this.scrollToBottom(); // 메시지가 업데이트될 때 스크롤 이동
@@ -129,9 +147,14 @@ export default {
     },
   },
   async mounted() {
-    this.fetchChatRooms();
-    await this.loadMessages();
     await this.loadRoomInfo(); // 현재 채팅방 정보 로드
+    await this.loadOtherParticipant(); // 상대방 정보 로드
+    await this.loadMessages();
+
+    // DOM 업데이트 대기
+    await this.$nextTick();
+    
+    this.fetchChatRooms();
     this.connectWebSocket();
     this.scrollToBottom();
 
@@ -141,71 +164,137 @@ export default {
       chatBody.addEventListener("scroll", this.handleScroll);
     }
   },
+  beforeUnmount() {
+    if (this.webSocket) {
+      this.webSocket.close();
+    }
+    const chatBody = this.$refs.chatBody;
+    if (chatBody) {
+      chatBody.removeEventListener("scroll", this.handleScroll);
+    }
+  },
   methods: {
+
+    async loadOtherParticipant() {
+  try {
+    // 서버로부터 roomId에 해당하는 참가자 목록을 가져옴
+    const response = await axios.get(`http://192.168.5.24:8090/api/chat/room/${this.roomId}/participants`);
+    
+    // 참여자 목록을 Vue의 상태로 저장
+    this.participants = response.data;
+    console.log("참여자 목록:", this.participants);
+
+    // 현재 사용자를 제외한 상대방을 찾기
+    const participant = this.participants.find(
+      (participant) => participant.userId !== this.userId
+    );
+
+    // 상대방이 없는 경우 기본값으로 설정
+    if (!participant) {
+      console.warn("상대방을 찾을 수 없습니다. 기본값으로 설정합니다.");
+      this.otherParticipant = {
+        userId: "",
+        name: "Unknown User",
+        profileImageUrl: "/img/default-profile.png",
+      };
+    } else {
+      this.otherParticipant = { ...participant };
+      console.log("제발", this.otherParticipant.profileImageUrl);
+    }
+    
+    console.log("otherParticipant 업데이트:", this.otherParticipant);
+
+    // DOM 업데이트를 위한 다음 틱 기다림
+    await this.$nextTick();
+  } catch (error) {
+    console.error("상대방 정보 로드 실패:", error);
+    // 오류 발생 시 기본값 설정
+    this.otherParticipant = {
+      userId: "",
+      name: "Unknown User",
+      profileImageUrl: "/img/default-profile.png",
+    };
+  }
+},
+
+
+
+
     async loadRoomInfo() {
       try {
         const response = await axios.get(
-          `http://localhost:8090/api/chat/room/${this.roomId}`
+          `http://192.168.5.24:8090/api/chat/room/${this.roomId}`
         );
-        const { room_name } = response.data; // room_name 추출
-        this.room_name = room_name; // room_name을 데이터에 반영
+
+        const { roomName, participants } = response.data; // 데이터 추출
+        this.room_name = roomName || "알 수 없는 채팅방"; // 방 이름 설정
+        this.participants = participants || []; // 참여자 목록 설정
+
+        console.log("채팅방 정보:", this.room_name);
+        console.log("채팅방 : ", this.participants);
+
       } catch (error) {
-        console.error("채팅방 이름 로드 실패: ", error);
-        this.room_name = "알 수 없는 채팅방"; // 기본값 설정
+        console.error("채팅방 정보 로드 실패:", error);
+        this.room_name = "알 수 없는 채팅방";
+        this.participants = [];
       }
     },
-
     async loadMessages() {
       try {
         const response = await axios.get(
-          `http://localhost:8090/api/chat/room/${this.roomId}/combinedMessages`
+          `http://192.168.5.24:8090/api/chat/room/${this.roomId}/combinedMessages`
         );
         this.messages = response.data;
 
         if (this.messages.length > 0) {
-        this.oldestMessageDate = this.messages[0].sendDate; // 가장 오래된 메시지 저장
-        this.scrollToBottom(); // 메시지를 로드한 후 맨 아래로 이동
-          }
-        } catch (error) {
-          console.error("채팅 내역 불러오기 실패: ", error);
-        }
-      },
-    async loadPreviousMessages() {
-      if (this.isFetching || !this.hasMoreMessages) return; // 요청 중이거나 더 가져올 메시지가 없으면 중단
-      this.isFetching = true;
-
-      try {
-        const response = await axios.get(
-          "http://localhost:8090/api/chat/messages/previous",
-          {
-            params: {
-              roomId: this.roomId,
-              before: this.oldestMessageDate,
-              limit: 20,
-            },
-          }
-        );
-        const newMessages = response.data;
-
-        if (newMessages.length > 0) {
-          this.oldestMessageDate = newMessages[0].sendDate; // 가장 오래된 메시지 업데이트
-          this.messages = [...newMessages, ...this.messages]; // 기존 메시지 앞에 추가
-        } else {
-          this.hasMoreMessages = false; // 더 이상 메시지가 없음을 설정
+          this.oldestMessageDate = this.messages[0].sendDate; // 가장 오래된 메시지 저장
+          this.scrollToBottom(); // 메시지를 로드한 후 맨 아래로 이동
         }
       } catch (error) {
-        console.error("지난 메시지 불러오기 실패:", error);
-      } finally {
-        this.isFetching = false;
+        console.error("채팅 내역 불러오기 실패:", error);
       }
     },
-    handleScroll() {
-      const chatBody = this.$refs.chatBody;
-      if (chatBody.scrollTop === 0) {
-        // 스크롤이 맨 위에 도달하면 지난 메시지 로드
-        this.loadPreviousMessages();
-      }
-    },
+    // async loadPreviousMessages() {
+    //   if (this.isFetching || !this.hasMoreMessages) return; // 요청 중이거나 더 가져올 메시지가 없으면 중단
+    //   this.isFetching = true;
+
+    //   if (!this.oldestMessageDate) {
+    //     console.error("oldestMessageDate가 비어 있습니다.");
+    //     this.isFetching = false;
+    //     return;
+    //   }
+
+    //   try {
+    //     // const response = await axios.get(
+    //     //   `http://192.168.5.24:8090/api/chat/messages/${this.roomId}/previous`,
+    //     //   {
+    //     //     params: {
+    //     //       before: this.oldestMessageDate,
+    //     //       limit: 20,
+    //     //     },
+    //     //   }
+    //     // );
+    //     //const newMessages = response.data;
+
+    //     if (newMessages.length > 0) {
+    //       this.oldestMessageDate = newMessages[0].sendDate; // 가장 오래된 메시지 업데이트
+    //       this.messages = [...newMessages, ...this.messages]; // 기존 메시지 앞에 추가
+    //     } else {
+    //       this.hasMoreMessages = false; // 더 이상 메시지가 없음을 설정
+    //     }
+    //   } catch (error) {
+    //     console.error("지난 메시지 불러오기 실패:", error);
+    //   } finally {
+    //     this.isFetching = false;
+    //   }
+    // },
+    // handleScroll() {
+    //   const chatBody = this.$refs.chatBody;
+    //   if (chatBody.scrollTop === 0) {
+    //     // 스크롤이 맨 위에 도달하면 지난 메시지 로드
+    //     this.loadPreviousMessages();
+    //   }
+    // },
     scrollToBottom() {
       this.$nextTick(() => {
         const chatBody = this.$refs.chatBody;
@@ -216,7 +305,7 @@ export default {
     },
     fetchChatRooms() {
       axios
-        .get("http://localhost:8090/api/chat/roomList", {
+        .get("http://192.168.5.24:8090/api/chat/roomList", {
           params: { userId: this.userId },
         })
         .then((response) => {
@@ -227,7 +316,7 @@ export default {
         });
     },
     connectWebSocket() {
-      this.webSocket = new WebSocket(`ws://localhost:8090/ws/${this.roomId}`);
+      this.webSocket = new WebSocket(`ws://192.168.5.24:8090/ws/${this.roomId}`);
 
       this.webSocket.onopen = () => {
         this.isConnected = true;
@@ -239,7 +328,7 @@ export default {
           this.messages.push(message);
           this.scrollToBottom();
         } catch (error) {
-          console.error("WebSocket 메시지 파싱 오류: ", error);
+          console.error("WebSocket 메시지 파싱 오류:", error);
         }
       };
 
@@ -272,7 +361,7 @@ export default {
     leaveRoom() {
       axios
         .post(
-          `http://localhost:8090/api/chat/room/${this.roomId}/leave`,
+          `http://192.168.5.24:8090/api/chat/room/${this.roomId}/leave`,
           null,
           { params: { userId: this.userId } }
         )
@@ -293,17 +382,9 @@ export default {
       this.chatRoomList.push(newRoom);
     },
   },
-  beforeUnmount() {
-    if (this.webSocket) {
-      this.webSocket.close();
-    }
-    const chatBody = this.$refs.chatBody;
-    if (chatBody) {
-      chatBody.removeEventListener("scroll", this.handleScroll);
-    }
-  },
 };
 </script>
+
 
 <style scoped>
 .chat-room-container {
@@ -321,6 +402,8 @@ export default {
 }
 
 .chat-main {
+  flex: 1;
+  display: flex;
   flex-direction: column;
   background-color: #000;
   color: white;
@@ -371,7 +454,7 @@ export default {
 
 .message-bubble {
   display: inline-block;
-  padding: 10px 15px;
+  padding: 10px 12px; /* padding을 조정하여 공백을 줄였습니다. */
   border-radius: 15px;
   word-wrap: break-word;
   white-space: pre-wrap;
@@ -385,6 +468,7 @@ export default {
 .chat-message.received .message-bubble {
   background-color: #333;
   color: white;
+  max-width: fit-content;
 }
 
 .timestamp {
@@ -479,6 +563,7 @@ export default {
   display: flex;
   align-items: flex-start;
   max-width: 70%;
+  max-width: fit-content;
 }
 
 /* 메시지와 시간 감싸기 */
@@ -489,7 +574,7 @@ export default {
 /* 메시지 버블 */
 .message-bubble {
   display: inline-block;
-  padding: 10px 15px;
+  padding: 10px 12px;
   border-radius: 15px;
   word-wrap: break-word;
   white-space: pre-wrap;
@@ -518,4 +603,53 @@ export default {
 .chat-message.received .timestamp {
   text-align: left;
 }
+
+
+.chat-profile {
+  text-align: center;
+  padding: 20px 10px;
+  border-bottom: 1px solid #333;
+  background-color: #000;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.profile-info {
+  margin-bottom: 10px;
+}
+
+.profile-username {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.profile-meta {
+  font-size: 12px;
+  color: #999;
+}
+
+.profile-view-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.profile-view-btn:hover {
+  background-color: #444;
+}
+
 </style>
