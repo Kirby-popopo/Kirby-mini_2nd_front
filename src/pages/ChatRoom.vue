@@ -1,6 +1,7 @@
 <template>
   <div class="chat-room-container">
     <!-- 좌측: ChatRoomList 컴포넌트 -->
+     <div class="row" style="width: 100%;">
     <div class="sidebar-room">
       <ChatRoomList :chatRoomList="chatRoomList" @room-created="onRoomCreated" />
     </div>
@@ -82,6 +83,7 @@
         />
       </footer>
     </div>
+  </div>
   </div>
 </template>
 
@@ -179,7 +181,7 @@ export default {
     async loadOtherParticipant() {
       try {
         // 서버로부터 roomId에 해당하는 참가자 목록을 가져옴
-        const response = await axios.get(`http://192.168.5.24:8090/api/chat/room/${this.roomId}/participants`);
+        const response = await axios.get(`http://192.168.5.58:8090/api/chat/room/${this.roomId}/participants`);
         
         // 전체 참여자 목록 설정
         this.participants = response.data;
@@ -209,7 +211,7 @@ export default {
     async loadRoomInfo() {
       try {
         const response = await axios.get(
-          `http://192.168.5.24:8090/api/chat/room/${this.roomId}`
+          `http://192.168.5.58:8090/api/chat/room/${this.roomId}`
         );
 
         const { roomName, participants } = response.data; // 데이터 추출
@@ -232,7 +234,7 @@ export default {
     async loadMessages() {
       try {
         const response = await axios.get(
-          `http://192.168.5.24:8090/api/chat/room/${this.roomId}/combinedMessages`
+          `http://192.168.5.58:8090/api/chat/room/${this.roomId}/combinedMessages`
         );
         this.messages = response.data;
 
@@ -254,7 +256,7 @@ export default {
     },
     fetchChatRooms() {
       axios
-        .get("http://192.168.5.24:8090/api/chat/roomList", {
+        .get("http://192.168.5.58:8090/api/chat/roomList", {
           params: { userId: this.userId },
         })
         .then((response) => {
@@ -265,7 +267,7 @@ export default {
         });
     },
     connectWebSocket() {
-      this.webSocket = new WebSocket(`ws://192.168.5.24:8090/ws/${this.roomId}`);
+      this.webSocket = new WebSocket(`ws://192.168.5.58:8090/ws/${this.roomId}`);
 
       this.webSocket.onopen = () => {
         this.isConnected = true;
@@ -310,7 +312,7 @@ export default {
     leaveRoom() {
       axios
         .post(
-          `http://192.168.5.24:8090/api/chat/room/${this.roomId}/leave`,
+          `http://192.168.5.58:8090/api/chat/room/${this.roomId}/leave`,
           null,
           { params: { userId: this.userId } }
         )
@@ -318,7 +320,7 @@ export default {
           if (this.webSocket) {
             this.webSocket.close();
           }
-          this.$router.push("/");
+          this.$router.push("/roomList");
         })
         .catch((error) => {
           console.error("채팅방 나가기 요청 실패:", error);
@@ -344,6 +346,7 @@ export default {
 
 .sidebar-room {
   flex: 0 0 300px;
+  width: 100%;
   max-width: 300px;
   overflow-y: auto;
   background-color: #121212;
@@ -352,6 +355,7 @@ export default {
 
 .chat-main {
   flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   background-color: #000;

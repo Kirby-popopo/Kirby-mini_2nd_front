@@ -18,10 +18,14 @@ export default {
   },
   computed:{
     authStore(){
-         return useAuthStore();
+          return useAuthStore();
         }
     },
   methods: {
+    CloseCreateModal(){
+      console.log("test")
+      this.isCreatePost = false;
+    },
     ClickMenu(selcetMenu) {
       switch (selcetMenu) {
         case 'Search':
@@ -54,7 +58,7 @@ export default {
 </script>
 
 <template>
-    <CreatePost v-if="isCreatePost" :isModalOpen @customEvent=""></CreatePost>
+    <CreatePost v-if="isCreatePost" :isModalOpen @customEvent="CloseCreateModal"></CreatePost>
     <Menu v-if="isMenuVisible" :section="Psection"></Menu>
     <div class="sidebar">
       <router-link to="/">

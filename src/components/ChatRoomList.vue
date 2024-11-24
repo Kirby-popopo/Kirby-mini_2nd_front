@@ -15,8 +15,8 @@
 
     <!-- 채팅방 생성 모달 -->
     <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
-      <div class="modal" @click.stop>
-        <h2 class="modal-title">새로운 채팅방 생성</h2>
+      <div class="modal-room" @click.stop>
+        <h2 class="modal-room-title">새로운 채팅방 생성</h2>
         <input
           v-model="newRoomName"
           @keyup.enter="createRoom"
@@ -57,7 +57,7 @@ export default {
     createRoom() {
       if (this.newRoomName.trim()) {
         axios
-          .post("http://192.168.5.24:8090/api/chat/createRoom", {
+          .post("http://192.168.5.58:8090/api/chat/createRoom", {
             room_name: this.newRoomName,
           })
           .then((response) => {
@@ -97,6 +97,10 @@ export default {
   font-size: 24px;
   margin-bottom: 20px;
   color: white;
+}
+
+.sidebar-header > h3 {
+  font-size: 24px;
 }
 
 .create-room-btn {
@@ -177,7 +181,7 @@ export default {
   align-items: center;
 }
 
-.modal {
+.modal-room {
   background-color: #262626;
   padding: 20px;
   border-radius: 8px;
@@ -186,7 +190,7 @@ export default {
   color: white;
 }
 
-.modal-title {
+.modal-room-title {
   margin-bottom: 20px;
   font-size: 18px;
 }

@@ -35,8 +35,8 @@
 
       <!-- 모달 -->
       <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
-        <div class="modal" @click.stop>
-          <h2 class="modal-title">새로운 메시지</h2>
+        <div class="modal-room" @click.stop>
+          <h2 class="modal-room-title">새로운 메시지</h2>
 
           <!-- 선택된 사용자 -->
           <div class="selected-recipients-container">
@@ -156,7 +156,7 @@ export default {
 
       // Axios 요청
       axios
-        .post("http://192.168.5.24:8090/api/chat/findOrCreateRoomByExactParticipants", {
+        .post("http://192.168.5.58:8090/api/chat/findOrCreateRoomByExactParticipants", {
           participantIds: participantIds, // 여기서 이미 participantIds를 생성했으므로 재사용
           currentUserId: this.currentUserId,
         })
@@ -173,7 +173,7 @@ export default {
     searchUsers() {
       if (this.recipient.trim() !== "") {
         axios
-          .post("http://192.168.5.24:8090/api/SearchUser", { userId: this.recipient })
+          .post("http://192.168.5.58:8090/api/SearchUser", { userId: this.recipient })
           .then((response) => {
             this.searchResults = response.data.obj;
           })
@@ -207,7 +207,7 @@ export default {
 
     fetchChatRooms() {
       axios
-        .get("http://192.168.5.24:8090/api/chat/roomList", {
+        .get("http://192.168.5.58:8090/api/chat/roomList", {
           params: { userId: this.userId },
         })
         .then((response) => {
@@ -289,17 +289,17 @@ export default {
 
 .modal-overlay {
   position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.modal {
+.modal-room {
   background-color: #262626;
   padding: 20px;
   border-radius: 12px;
@@ -308,7 +308,7 @@ export default {
   text-align: center;
 }
 
-.modal-title {
+.modal-room-title {
   margin-bottom: 20px;
   font-size: 20px;
 }

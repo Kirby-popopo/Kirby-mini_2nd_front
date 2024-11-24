@@ -1,11 +1,20 @@
-<script></script>
+<script>
+
+export default {
+    methods:{
+        refresh(){
+            this.$router.go(0);    
+        }
+    }
+}
+</script>
 
 <template>
     <div class="end-of-feed">
         <div class="end-of-feed__icon">🏁</div>
         <h2 class="end-of-feed__title">모든 게시물을 보았습니다</h2>
         <p class="end-of-feed__message">최신 게시물을 모두 확인하셨습니다.</p>
-        <button class="end-of-feed__button">새로고침</button>
+        <button class="end-of-feed__button" @click="refresh">새로고침</button>
     </div>
 </template>
 

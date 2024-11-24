@@ -17,46 +17,51 @@ const routes = [
         path:'/',
         name: 'Main',
         component: main,
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, showSidebar: true },
     },
     {
         path:'/profile',
         name: 'profile',
         component: profile,
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, showSidebar: true },
     },
     {
         path:'/profileEdit',
         name:'profileEdit',
         component: ProfileEdit,
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, showSidebar: true },
     },
     {
         path:'/login',
         name:'login',
         component: login,
+        meta: { showSidebar: false },
     },
     {
         path:'/signup',
         name:'signup',
-        component: signup
+        component: signup,
+        meta: { showSidebar: false },
     },
     {
         path: '/oauth2/callback',
         name: 'OAuthCallback',
         component: OAuthCallback,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false, showSidebar: false }
+        
     },
     {
         path: '/chat-room/:id',  // 채팅방 상세 페이지 라우팅
         name: 'ChatRoom',
         component: ChatRoom,  // ChatRoom 컴포넌트
-        props: true  // URL 파라미터를 컴포넌트로 전달
+        props: true,  // URL 파라미터를 컴포넌트로 전달
+        meta: { showSidebar: true },
     },
     {
         path: '/roomList',
         name: 'RoomList', // 채팅방 목록 라우터
-        component: RoomList
+        component: RoomList,
+        meta: { showSidebar: false },
     },
 
 ]; // 라우팅 패스, 컴포넌트 등 정의

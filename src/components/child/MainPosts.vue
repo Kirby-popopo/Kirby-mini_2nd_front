@@ -1,35 +1,43 @@
 <script>
 import { useAuthStore } from '@/stores/useAuthStores';
+import axios from 'axios';
+import LikesModal from './LikesModal.vue';
 
 export default {
     components: {
+        LikesModal,
     },
     mounted(){
         // 해당 게시글의 모든 댓글.
-        const param = {
-            postPk: this.post.post_pk,
-        }
-        axios.post("http://localhost:8090/api/comment", param, {
-            headers: "",    
-        })
+        const postPk = this.post.post_pk;
+        
+        axios.get(`http://localhost:8090/api/comment/${postPk}`)
         .then((response) =>{
-            console.log(response);
             if(response.data.obj != null){
-                const responseData = response.data.obj.content;
+                const responseData = response.data.obj;
                 if(responseData != null){
                     for(var comment of responseData){
                         this.comments.push(comment);
                     }
                 }
-            }else{
-                    
             }
         })
+
+        axios.get(`http://localhost:8090/api/like/${postPk}`)
+            .then((response) => {
+                console.log(response);
+                for(var likeUser of response.data.obj){
+                    this.likeList.push(likeUser.user_id);
+                }
+            })
     },
     data(){
         return {
             comments:[],
             commentHide:true,
+            like_img: '',
+            likeList: [],
+            showLike: false,
         }
     },
     computed:{
@@ -42,20 +50,59 @@ export default {
         },
         authStore(){
             return useAuthStore();
+        },
+        likeCount(){
+            return this.likeList.length;
         }
     },
     props:{
         post: Object,
     },
     methods: {
+        closeModal(){
+            this.showLike = !this.showLike;
+        },
+        showLikeModal(){
+            this.showLike = !this.showLike;
+        },
         toggleComments() {
             this.commentHide = !this.commentHide;
         },
+        addComment(){
+            const param = {
+                content: this.$refs.commentInput.value,
+                post_pk: this.post.post_pk,
+                user_id: this.authStore.userDetail.userId,
+            }
+
+            axios.post('http://localhost:8090/api/comment', param,{
+                headers:{
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then((response) =>{
+                axios.get(`http://localhost:8090/api/comment/${this.post.post_pk}`)
+                .then((response) =>{
+                    this.comments = [];
+
+                    if(response.data.obj != null){
+                        const responseData = response.data.obj;
+
+                        if(responseData != null){
+                            for(var comment of responseData){
+                                this.comments.push(comment);
+                            }
+                        }
+                    }
+                })
+            })
+        }
     },
 };
 </script>
 
 <template>
+<LikesModal :is-open="showLike" :liked-users="likeList" @customEvent="closeModal"></LikesModal>
 <div class="post-header">
         <!-- pinia 에서 유저 이름, 이미지로 설정 -->
         <!-- <img :src="authStore.userDetail.userImageUrl" alt=""> -->
@@ -69,16 +116,15 @@ export default {
 			<video class="embed-responsive-item" :src="post.media_url" controls autoplay></video>
 		</div>
     <div class="post-actions">
-        <button>❤️</button>
+        <button @click="like_post"><img :src="like_img" width="25px" height="25px"></button>
         <button>💬</button>
         <button>🔗</button>
         <button class="save-button">🔖</button>
     </div>
-    <div class="post-likes">
-        {{ post.likes_count }}명이 좋아합니다.
+    <div class="post-likes" @click="showLikeModal">
+        {{ likeCount }}명이 좋아합니다.
     </div>
     <div class="post-content">
-        <span class="username">병아리</span>
         <span class="content" >{{ post.contents }}</span>
         <!-- <span class="content" id="full-content" style="display: none;">갓생살자<br>#아침 #맛있다</span> -->
         <!-- <span class="more" id="show-more" onclick="toggleContent()">더 보기</span> -->
@@ -94,8 +140,8 @@ export default {
         </div>
     </div>
     <div class="comment-input">
-        <input type="text" id="comment-input" placeholder="댓글 달기...">
-        <button id="add-comment" onclick="addComment()">게시</button>
+        <input ref="commentInput" type="text" id="comment-input" placeholder="댓글 달기...">
+        <button id="add-comment" @click="addComment">게시</button>
     </div>
 </template>
 
@@ -158,7 +204,7 @@ export default {
         background-color: #1e1e1e;
         color: #fff;
     }
-    .modal {
+    /* .modal {
         display: none;
         position: fixed;
         z-index: 1;
@@ -195,5 +241,5 @@ export default {
         border: none;
         border-radius: 5px;
         cursor: pointer;
-    }
+    } */
 </style>
