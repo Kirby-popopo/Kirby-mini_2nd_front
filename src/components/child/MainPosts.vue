@@ -10,8 +10,9 @@ export default {
     mounted(){
         // 해당 게시글의 모든 댓글.
         const postPk = this.post.post_pk;
+        const userId = this.authStore.userDetail.userId;
         
-        axios.get(`http://localhost:8090/api/comment/${postPk}`)
+        axios.get(`http://192.168.5.58:8090/api/comment/${postPk}`)
         .then((response) =>{
             if(response.data.obj != null){
                 const responseData = response.data.obj;
@@ -23,13 +24,17 @@ export default {
             }
         })
 
-        axios.get(`http://localhost:8090/api/like/${postPk}`)
-            .then((response) => {
-                console.log(response);
-                for(var likeUser of response.data.obj){
-                    this.likeList.push(likeUser.user_id);
-                }
-            })
+        axios.get(`http://192.168.5.58:8090/api/like/${postPk}`)
+        .then((response) => {
+            for(var likeUser of response.data.obj){
+                this.likeList.push(likeUser.user_id);
+            }
+        })
+
+        axios.get(`http://192.168.5.58:8090/api/checkLike/${postPk}/${userId}`)
+        .then((response) => {
+            this.like = response.data.obj;
+        })
     },
     data(){
         return {
@@ -38,6 +43,7 @@ export default {
             like_img: '',
             likeList: [],
             showLike: false,
+            like: true,
         }
     },
     computed:{
@@ -53,12 +59,48 @@ export default {
         },
         likeCount(){
             return this.likeList.length;
+        },
+        like_img(){
+            if(this.like){
+                return "/img/dolike.png";
+            }else{
+                return "/img/unlike.png";
+            }
         }
     },
     props:{
         post: Object,
     },
     methods: {
+        like_post(){
+            const param ={
+                post_pk: this.post.post_pk,
+                user_id: this.authStore.userDetail.userId
+            }
+            console.log("param 값 체크")
+            console.log(param)
+
+            axios.post('http://192.168.5.58:8090/api/like', param,{
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then((res) => {
+                if(this.like){
+                    const updatedArr = this.likeList.filter(item => item.user_id == param.user_id);
+                    this.likeList = updatedArr;
+                    this.like = !this.like;
+                }else{
+                    console.log(this.authStore.userDetail.userImageUrl)
+                    this.likeList.push({
+                        profileImage: this.authStore.userDetail.userImageUrl,
+                        userId: param.user_id,
+                        name: this.authStore.userDetail.name,
+                    });
+                    this.like = !this.like;
+                }
+            })
+        },
         closeModal(){
             this.showLike = !this.showLike;
         },
@@ -75,13 +117,13 @@ export default {
                 user_id: this.authStore.userDetail.userId,
             }
 
-            axios.post('http://localhost:8090/api/comment', param,{
+            axios.post('http://192.168.5.58:8090/api/comment', param,{
                 headers:{
                     'Content-Type': 'application/json',
                 }
             })
             .then((response) =>{
-                axios.get(`http://localhost:8090/api/comment/${this.post.post_pk}`)
+                axios.get(`http://192.168.5.58:8090/api/comment/${this.post.post_pk}`)
                 .then((response) =>{
                     this.comments = [];
 
@@ -96,6 +138,8 @@ export default {
                     }
                 })
             })
+
+            this.$refs.commentInput.value = '';
         }
     },
 };
@@ -106,12 +150,12 @@ export default {
 <div class="post-header">
         <!-- pinia 에서 유저 이름, 이미지로 설정 -->
         <!-- <img :src="authStore.userDetail.userImageUrl" alt=""> -->
-        <img src="http://localhost:8090/images/default.jpg" alt="">
+        <img src="http://192.168.5.58:8090/images/default.jpg" alt="">
         <span class="username">{{ post.user_id }}</span>
     </div>
     <div class="post-image">
         <img :src="post.image_url" v-show="isMedia" alt="계란프라이">
-    </div>
+    </div style="width: 200px; height: 500px;">
         <div class="embed-responsive embed-responsive-4by3" v-show="!isMedia">
 			<video class="embed-responsive-item" :src="post.media_url" controls autoplay></video>
 		</div>

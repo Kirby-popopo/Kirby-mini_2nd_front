@@ -6,7 +6,7 @@
       @click="selectUser(item)"
     >
       <template v-if="allowNavigation">
-        <router-link :to="{ path: '/profile', query: { userId: item.userId } }">
+        <router-link :to="{ path: '/profile', query: { userId: item.userId } }" @click.native="refresh">
           <img :src="item.profileImage" alt="User" width="20px" />
           <span>{{ item.name }}</span>
         </router-link>
@@ -34,6 +34,11 @@
       selectUser(user) {
         this.$emit("select-user", user); // 클릭된 유저 정보를 부모로 전달
       },
+      refresh(){
+        setTimeout(() => {
+          location.reload();
+        }, 100);
+      }
     },
   };
   </script>

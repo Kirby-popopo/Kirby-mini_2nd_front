@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
         if (savedToken) {
             try {
                 // 유효성 검사
-                await axios.get('http://localhost:8090/api/auth/check', {
+                await axios.get('http://192.168.5.58:8090/api/auth/check', {
                     headers : {
                         'authorization' : savedToken,
                     },
@@ -63,7 +63,7 @@ export const useAuthStore = defineStore('auth', () => {
             return;
         }
         try {
-            const response = await axios.get('http://localhost:8090/api/auth/userinfo',{
+            const response = await axios.get('http://192.168.5.58:8090/api/auth/userinfo',{
                 headers: {
                     'authorization': token.value,
                 }
@@ -80,7 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
     function setUserDetail(data){
         userDetail.userId = data.userId;
         userDetail.userDescription = data.description;
-        userDetail.userImageUrl = data.userImageUrl;
+        userDetail.userImageUrl = data.profileImage;
         userDetail.userName = data.userName;
 
         // LocalStorage에 사용자 정보 저장

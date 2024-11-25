@@ -1,6 +1,7 @@
 <script>
 import { useAuthStore } from '@/stores/useAuthStores';
 import profilePosts from '@/components/child/profilePosts.vue';
+import axios from 'axios';
 
 export default {
     name: "ProfilePage",
@@ -33,6 +34,19 @@ export default {
             }
         },
     methods: {
+        logOut(){
+            axios.get("http://192.168.5.58:8090/api/auth/logout").then((res) => {
+                if (res.headers['authorization'] == 'delete') {
+                    this.authStore.clearToken();
+                    localStorage.removeItem('authToken');
+                    this.$router.push('/login');
+                }
+                window.alert(res.data);
+            }).catch(() => {
+            window.alert("로그아웃을 수행하는 동안 오류가 발생하였습니다..");
+            });
+        },
+
         async loadData(){
             // URL에서 쿼리 파라미터 가져오기
             this.userId = this.$route.query.userId;
@@ -40,13 +54,12 @@ export default {
                 userId: this.userId,
             }
             const response = await this.$axios.post("/api/Profile", param);
-
+            console.log(response);
             this.userName = response.data.obj.userName;
             this.userProfileImage = response.data.obj.userProfileImage;
-            this.userDescription = response.data.obj.description;
+            this.userDescription = response.data.obj.userDescription;
             this.following = response.data.obj.following;
             this.follower = response.data.obj.follower;
-
         },
 
         getPosts(){
@@ -97,7 +110,7 @@ export default {
                 <button  class="profile-button" id="unfollow-button" v-show="!isSameUser" >팔로잉</button><!-- 아닐시 -->
 
                 <!-- 보관된 스토리 보기, 메시지 보내기 -->
-                <button class="profile-button">보관된 스토리 보기</button><!-- 로그인 유저와 동일하면-->
+                <button class="profile-button" @click="logOut">로그 아웃</button><!-- 로그인 유저와 동일하면-->
                 <button class="profile-button">메시지 보내기</button><!-- 아닐시 -->
                 <svg aria-label="옵션" class="settings-icon" fill="#262626" height="24" viewBox="0 0 48 48" width="24">
                     <path d="M46.7 20.6l-2.1-1.1c-.4-.2-.7-.5-.8-1-.5-1.6-1.1-3.2-1.9-4.7-.2-.4-.3-.8-.1-1.2l.8-2.3c.2-.5 0-1.1-.4-1.5l-2.9-2.9c-.4-.4-1-.5-1.5-.4l-2.3.8c-.4.1-.8.1-1.2-.1-1.4-.8-3-1.5-4.6-1.9-.4-.1-.8-.4-1-.8l-1.1-2.2c-.3-.5-.8-.8-1.3-.8h-4.1c-.6 0-1.1.3-1.3.8l-1.1 2.2c-.2.4-.5.7-1 .8-1.6.5-3.2 1.1-4.6 1.9-.4.2-.8.3-1.2.1l-2.3-.8c-.5-.2-1.1 0-1.5.4L5.9 8.8c-.4.4-.5 1-.4 1.5l.8 2.3c.1.4.1.8-.1 1.2-.8 1.5-1.5 3-1.9 4.7-.1.4-.4.8-.8 1l-2.1 1.1c-.5.3-.8.8-.8 1.3V26c0 .6.3 1.1.8 1.3l2.1 1.1c.4.2.7.5.8 1 .5 1.6 1.1 3.2 1.9 4.7.2.4.3.8.1 1.2l-.8 2.3c-.2.5 0 1.1.4 1.5L8.8 42c.4.4 1 .5 1.5.4l2.3-.8c.4-.1.8-.1 1.2.1 1.4.8 3 1.5 4.6 1.9.4.1.8.4 1 .8l1.1 2.2c.3.5.8.8 1.3.8h4.1c.6 0 1.1-.3 1.3-.8l1.1-2.2c.2-.4.5-.7 1-.8 1.6-.5 3.2-1.1 4.6-1.9.4-.2.8-.3 1.2-.1l2.3.8c.5.2 1.1 0 1.5-.4l2.9-2.9c.4-.4.5-1 .4-1.5l-.8-2.3c-.1-.4-.1-.8.1-1.2.8-1.5 1.5-3 1.9-4.7.1-.4.4-.8.8-1l2.1-1.1c.5-.3.8-.8.8-1.3v-4.1c.4-.5.1-1.1-.4-1.3zM24 41.5c-9.7 0-17.5-7.8-17.5-17.5S14.3 6.5 24 6.5 41.5 14.3 41.5 24 33.7 41.5 24 41.5z"></path>
@@ -105,7 +118,7 @@ export default {
             </div>
             <div class="profile-stats">
                 <div class="stat">
-                    게시물 <span class="stat-value">1</span>
+                    게시물 <span class="stat-value">{{ posts.length }}</span>
                 </div>
                 <div class="stat">
                     팔로워 <span id="followCount" class="stat-value">{{ follower.length }}</span>
@@ -114,7 +127,7 @@ export default {
                     팔로우 <span class="stat-value">{{ following.length }}</span>
                 </div>
             </div>
-            <div class="profile-fullname">{{ userName }}</div>
+            <!-- <div class="profile-fullname">{{ userName }}</div>-->
             <div class="profile-description">{{ userDescription }}</div>
         </div>
     </header>

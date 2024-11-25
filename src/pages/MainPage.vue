@@ -27,16 +27,8 @@ const router = useRouter();
 
 
 const getPosts = ()=>{
-    const param = {
-        userId: authStore.userDetail.userId,
-        page: page.value,
-    }
-
-    console.log(param);
-    
-    axios.post("http://localhost:8090/api/mainPage", param, {
-        headers: "",
-    })
+    const pageParam = page.value;
+    axios.get(`http://192.168.5.58:8090/api/mainPage/${pageParam}`)
         .then((response) =>{
             console.log(response);
             if(response.data.obj != null){
@@ -90,6 +82,7 @@ const scrollHandler = () => {
     border-radius: 3px;
     margin-bottom: 20px;
     color: white;
+    width: 600px;
 }
 .end-posts {
     border: 1px solid #2c2c2c;
@@ -97,6 +90,7 @@ const scrollHandler = () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 600px;
 }
 
 </style>

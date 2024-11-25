@@ -47,11 +47,11 @@
                 <div v-if="passwordError" class="char-count">
                     <span id="passworderror">{{ passwordError }}</span>
                 </div>
-                <button type="button" id="passwordToggle" class="password-toggle">표시</button>
             </div>
             <button type="submit" :disabled="!isFormValid" id="submitButton">가입</button>
         </form>
-    </div></template>
+    </div>
+</template>
 
 <script setup>
 import { reactive, ref, computed, watch } from 'vue';
@@ -99,7 +99,7 @@ const checkUserId = async () => {
     }
 
     try {
-        const response = await axios.get('http://localhost:8090/api/auth/checkUserId',{
+        const response = await axios.get('http://192.168.5.58:8090/api/auth/checkUserId',{
             params: { userId: form.userId }
         });
 
@@ -128,7 +128,7 @@ const signup = async () => {
         return;
     }
     try {
-        const response = await axios.post('http://localhost:8090/api/auth/signup', {
+        const response = await axios.post('http://192.168.5.58:8090/api/auth/signup', {
             userId: form.userId,
             userPw: form.userPw,
             email: form.userInput.includes('@') ? form.userInput : '',
@@ -147,6 +147,14 @@ const signup = async () => {
 </script>
 
 <style>
+    .signup-container{
+        position: fixed;
+        justify-content: center;
+        align-items: center;
+        width: 600px;
+        left: 600px;
+    }
+
     .input-container {
         position: relative;
         margin-bottom: 20px;

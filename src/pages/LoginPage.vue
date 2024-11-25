@@ -65,7 +65,7 @@ import axios from 'axios';
 
         
     const login = () => {
-        axios.post('http://localhost:8090/api/auth/login', {
+        axios.post('http://192.168.5.58:8090/api/auth/login', {
             userId: state.form.userId,
             userPw: state.form.userPw
         })
@@ -92,7 +92,7 @@ import axios from 'axios';
 
         // 로그아웃
         const logout = () => {      
-            axios.get("http://localhost:8090/api/auth/logout").then((res) => {
+            axios.get("http://192.168.5.58:8090/api/auth/logout").then((res) => {
                 if (res.headers['Authorization'] == 'delete') {
                     authStore.clearToken();
                     localStorage.removeItem('authToken');
@@ -106,7 +106,7 @@ import axios from 'axios';
 
         //로그인 체크 함수
     const check = () => {      
-        axios.get("http://localhost:8090/api/auth/check",{
+        axios.get("http://192.168.5.58:8090/api/auth/check",{
             headers: {
             'authorization': authStore.token,
             }
@@ -124,7 +124,6 @@ import axios from 'axios';
 <style lang="css">
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #fafafa;
             margin: 0;
             padding: 0;
             display: flex;

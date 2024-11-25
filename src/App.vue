@@ -14,7 +14,7 @@ export default {
 
     // Main Content의 클래스 동적으로 변경
     const mainContentClass = computed(() =>
-      showSidebar.value ? 'col-9 bg-black' : 'col-12 bg-black'
+      showSidebar.value ? 'col-9 bg-black' : 'col-12 bg-white'
     );
 
     return {
@@ -46,12 +46,6 @@ export default {
 </template>
 
 <style>  
-  a {
-    text-decoration: none;
-  }
-  a:visited{
-    color: inherit;
-  }
   /* html, body, #app {
     margin: 0;
     padding: 0;

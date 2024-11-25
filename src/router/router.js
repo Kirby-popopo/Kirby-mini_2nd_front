@@ -61,7 +61,7 @@ const routes = [
         path: '/roomList',
         name: 'RoomList', // 채팅방 목록 라우터
         component: RoomList,
-        meta: { showSidebar: false },
+        meta: { showSidebar: true },
     },
 
 ]; // 라우팅 패스, 컴포넌트 등 정의
@@ -83,7 +83,7 @@ router.beforeEach(async (to, from, next) => {
     if (to.meta.requiresAuth) {
         if (token) {
             // 서버에 유효성 검사를 요청하거나 토큰의 만료 시점을 검증
-            await axios.get('http://localhost:8090/api/auth/check', {
+            await axios.get('http://192.168.5.58:8090/api/auth/check', {
                 headers: {
                     'authorization': token,
                 }

@@ -61,14 +61,14 @@ export default {
     <CreatePost v-if="isCreatePost" :isModalOpen @customEvent="CloseCreateModal"></CreatePost>
     <Menu v-if="isMenuVisible" :section="Psection"></Menu>
     <div class="sidebar">
-      <router-link to="/">
+      <router-link to="/" style="text-decoration: none;">
         <div class="sidebar-item" @click="ClickMenu('close')">
             <img src="https://img.icons8.com/material-outlined/24/ffffff/instagram-new.png" alt="Instagram">
             <span class="sidebar-text">Instagram</span>
         </div>
       </router-link>
 
-      <router-link to="/">
+      <router-link to="/"style="text-decoration: none;">
         <div class="sidebar-item" @click="ClickMenu('close')">
             <img src="https://img.icons8.com/material-outlined/24/ffffff/home&#45;&#45;v2.png" alt="홈">
             <span class="sidebar-text">홈</span>
@@ -83,7 +83,7 @@ export default {
             <span class="sidebar-text">탐색 탭</span>
         </div>  
         
-      <router-link to="/roomList">
+      <router-link to="/roomList" style="text-decoration: none;">
         <div class="sidebar-item">
             <img src="https://img.icons8.com/material-outlined/24/ffffff/facebook-messenger.png" alt="메시지">
             <span class="sidebar-text">메시지</span>
@@ -100,7 +100,7 @@ export default {
         </div> 
 
         <!-- 로그인 정보를 받아서 처리 예정 -->
-      <router-link :to="{ path: '/profile', query: { userId: authStore.userDetail.userId } }">
+      <router-link :to="{ path: '/profile', query: { userId: authStore.userDetail.userId } }" style="text-decoration: none;">
         <div class="sidebar-item" @click="ClickMenu('close')">
             <img src="https://img.icons8.com/material-outlined/24/ffffff/user-male-circle.png" alt="프로필">
             <span class="sidebar-text">프로필</span>

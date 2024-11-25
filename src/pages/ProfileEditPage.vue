@@ -31,10 +31,13 @@ export default {
             this.descriptionText = user.data.obj.userDescription;
             this.$refs.gender.value = user.data.obj.userGender;
         },
+        
         selectImage(){
             this.$refs.fileInput.click();
         },
+
         handleImageUpload(e){
+            e.stopPropagation();
             const file = e.target.files[0];
             if(file){
                 this.selectedFile = file;
@@ -43,8 +46,9 @@ export default {
                 this.profileImage = URL.createObjectURL(file);
             }
         },
+
         async submitChangeProfile(e){
-            e.preventDefault();
+            e.stopPropagation();
             console.log(this.selectedFileName);
 
             const formData = new FormData();
@@ -93,7 +97,7 @@ export default {
             <div class="username">{{ authStore.userDetail.userId }}</div>
             <div >{{authStore.userDetail.userName}}</div>
         </div>
-            <button class="change-button" @click="selectImage">사진 변경</button>
+            <button class="change-button" type="button" @click="selectImage">사진 변경</button>
             <input type="file" ref="fileInput" @change="handleImageUpload" style="display: none;">
         </div>
 

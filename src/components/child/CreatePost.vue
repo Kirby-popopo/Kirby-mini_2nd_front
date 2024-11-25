@@ -60,26 +60,21 @@ export default {
     },
     methods:{
         sendEvent() {
-            console.log("test");
             this.$emit('custom-event', "test");
         },
         selectFile(){
             this.$refs.fileInput.click();
         },
         handleFileUpload(e){
-            console.log("핸들러");
             const file = e.target.files[0];
             if(file){
                 this.selectedFile = file;
                 this.preSelectedFile = URL.createObjectURL(file);
                 this.FileType = file.name.split('.').pop().toLowerCase();
-                console.log(this.FileType);
             }
         },
         submitUploadPost(e){
-            console.log("서밋");
             e.preventDefault();
-            console.log(this.selectedFile);
             const formData = new FormData();
             formData.append('media', this.selectedFile);
             formData.append('post', JSON.stringify({
@@ -88,21 +83,27 @@ export default {
             }));
 
             try{
-                axios.post('http://192.168.5.72:8090/api/post', formData, {
+                axios.post('http://192.168.5.58:8090/api/post', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',  // 파일 처리 관련 헤더.
                         },
                 }).then((response) => {
-                    console.log(response);
                 });
+                this.sendEvent();
             
+                // 서버에 파일 업로드 시간 대기
+                const wakeUpTime = Date.now() + 1500;
+                while (Date.now() < wakeUpTime) {}
+
             this.$router.push(
                 {
                     name :'profile', query: { userId: this.userId }
+                })
+                .then(() => {
+                    location.reload();
                 });
 
             }catch(err){
-                console.log(err);
             }
         
         }

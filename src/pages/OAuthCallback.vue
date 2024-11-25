@@ -22,7 +22,7 @@ onMounted(() => {
         console.log("코드값:", code);
 
         // 백엔드로 POST 요청 보내기
-        axios.post('http://localhost:8090/api/auth/oauth2-login', {
+        axios.post('http://192.168.5.58:8090/api/auth/oauth2-login', {
             code: code,
             redirect_uri: 'http://localhost:5173/oauth2/callback'
         }).then((response) => {

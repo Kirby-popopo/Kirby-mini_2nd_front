@@ -34,13 +34,13 @@ export default {
                 user_id: this.authStore.userDetail.userId,
             }
 
-            axios.post('http://localhost:8090/api/comment', param,{
+            axios.post('http://192.168.5.58:8090/api/comment', param,{
                 headers:{
                     'Content-Type': 'application/json',
                 }
             })
             .then((response) =>{
-                axios.get(`http://localhost:8090/api/comment/${this.viewPost.post_pk}`)
+                axios.get(`http://192.168.5.58:8090/api/comment/${this.viewPost.post_pk}`)
                 .then((response) =>{
                     this.comments = [];
 
@@ -69,11 +69,10 @@ export default {
             this.viewPost = post;
             this.isModalOpen = true;
 
-            axios.get(`http://localhost:8090/api/comment/${post.post_pk}`)
+            axios.get(`http://192.168.5.58:8090/api/comment/${post.post_pk}`)
             .then((response) =>{
                 if(response.data.obj != null){
                     const responseData = response.data.obj;
-                    console.log(response.data);
                     if(responseData != null){
                         for(var comment of responseData){
                             this.comments.push(comment);
